@@ -1,0 +1,241 @@
+"use client";
+
+import { useState } from "react";
+import { createPlace, createSource } from "@/lib/store";
+import { CATEGORY_CONFIG, PRIORITY_CONFIG } from "@/lib/constants";
+import { Category, Priority, FoodCategory, ActivityCategory } from "@/lib/types";
+import { parseSourceUrl } from "@/lib/url-parser";
+
+interface Props {
+  cityId: string;
+  memberId: string;
+  onClose: () => void;
+}
+
+const FOOD_CATEGORIES: FoodCategory[] = [
+  "breakfast", "brunch", "lunch", "dinner", "hotpot", "bbq",
+  "street_food", "noodles", "dumplings", "cafe", "tea_house",
+  "bar", "dessert", "ice_cream", "bakery", "bubble_tea",
+];
+
+const ACTIVITY_CATEGORIES: ActivityCategory[] = [
+  "tourist", "temple", "museum", "park", "nature",
+  "nightlife", "experience", "shopping_mall", "market", "shop", "photo_spot",
+];
+
+export default function AddPlaceModal({ cityId, memberId, onClose }: Props) {
+  const [nameEn, setNameEn] = useState("");
+  const [nameZh, setNameZh] = useState("");
+  const [category, setCategory] = useState<Category>("dinner");
+  const [priority, setPriority] = useState<Priority>("want_to");
+  const [address, setAddress] = useState("");
+  const [hoursNote, setHoursNote] = useState("");
+
+  // Optional first source
+  const [sourceUrl, setSourceUrl] = useState("");
+  const [sourceTakeaway, setSourceTakeaway] = useState("");
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!nameEn.trim()) return;
+
+    const place = createPlace(cityId, memberId, {
+      name_en: nameEn.trim(),
+      name_zh: nameZh.trim(),
+      category,
+      priority,
+      address: address.trim() || null,
+      hours_note: hoursNote.trim() || null,
+    });
+
+    // Attach first source if provided
+    if (sourceUrl.trim()) {
+      const parsed = parseSourceUrl(sourceUrl.trim());
+      createSource(place.id, memberId, {
+        platform: parsed.platform,
+        url: sourceUrl.trim(),
+        author: parsed.author,
+        key_takeaway: sourceTakeaway.trim() || null,
+        rating_vibe: "recommended",
+      });
+    }
+
+    onClose();
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      <div className="absolute inset-0 bg-black/30" onClick={onClose} />
+      <div className="relative bg-white rounded-xl shadow-xl w-full max-w-lg mx-4 p-6 max-h-[90vh] overflow-y-auto">
+        <h2 className="text-lg font-semibold mb-4">Add a place</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Names */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-stone-500 mb-1">
+                Name (English)
+              </label>
+              <input
+                type="text"
+                value={nameEn}
+                onChange={(e) => setNameEn(e.target.value)}
+                placeholder="Grandma's Home"
+                className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                autoFocus
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-stone-500 mb-1">
+                Name (Chinese)
+              </label>
+              <input
+                type="text"
+                value={nameZh}
+                onChange={(e) => setNameZh(e.target.value)}
+                placeholder="外婆家"
+                className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+              />
+            </div>
+          </div>
+
+          {/* Category */}
+          <div>
+            <label className="block text-xs font-medium text-stone-500 mb-2">
+              Category
+            </label>
+            <div className="mb-1.5">
+              <span className="text-xs text-stone-400">Food & Drink</span>
+            </div>
+            <div className="flex flex-wrap gap-1.5 mb-3">
+              {FOOD_CATEGORIES.map((cat) => (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => setCategory(cat)}
+                  className={`text-xs px-2.5 py-1 rounded-full border ${
+                    category === cat
+                      ? "border-orange-400 bg-orange-50 text-orange-700"
+                      : "border-stone-200 text-stone-600 hover:bg-stone-100"
+                  }`}
+                >
+                  {CATEGORY_CONFIG[cat].emoji} {CATEGORY_CONFIG[cat].label}
+                </button>
+              ))}
+            </div>
+            <div className="mb-1.5">
+              <span className="text-xs text-stone-400">Activities & Shopping</span>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {ACTIVITY_CATEGORIES.map((cat) => (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => setCategory(cat)}
+                  className={`text-xs px-2.5 py-1 rounded-full border ${
+                    category === cat
+                      ? "border-orange-400 bg-orange-50 text-orange-700"
+                      : "border-stone-200 text-stone-600 hover:bg-stone-100"
+                  }`}
+                >
+                  {CATEGORY_CONFIG[cat].emoji} {CATEGORY_CONFIG[cat].label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Priority */}
+          <div>
+            <label className="block text-xs font-medium text-stone-500 mb-2">
+              Priority
+            </label>
+            <div className="flex gap-2">
+              {(Object.keys(PRIORITY_CONFIG) as Priority[]).map((p) => (
+                <button
+                  key={p}
+                  type="button"
+                  onClick={() => setPriority(p)}
+                  className={`text-xs px-3 py-1.5 rounded-full border ${
+                    priority === p
+                      ? "border-orange-400 bg-orange-50 text-orange-700"
+                      : `border-stone-200 ${PRIORITY_CONFIG[p].color} hover:opacity-80`
+                  }`}
+                >
+                  {PRIORITY_CONFIG[p].label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Address + Hours */}
+          <div>
+            <label className="block text-xs font-medium text-stone-500 mb-1">
+              Address
+            </label>
+            <input
+              type="text"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              placeholder="123 Nanjing Road"
+              className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-stone-500 mb-1">
+              Hours note (optional)
+            </label>
+            <input
+              type="text"
+              value={hoursNote}
+              onChange={(e) => setHoursNote(e.target.value)}
+              placeholder="e.g. Closed 2-5pm, weekdays only"
+              className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+            />
+          </div>
+
+          {/* First source (optional) */}
+          <div className="border-t border-stone-100 pt-4">
+            <p className="text-xs font-medium text-stone-500 mb-3">
+              Source (optional — add the link that led you here)
+            </p>
+            <div className="space-y-3">
+              <input
+                type="url"
+                value={sourceUrl}
+                onChange={(e) => setSourceUrl(e.target.value)}
+                placeholder="Paste link from TikTok, RedNote, Instagram..."
+                className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+              />
+              {sourceUrl && (
+                <input
+                  type="text"
+                  value={sourceTakeaway}
+                  onChange={(e) => setSourceTakeaway(e.target.value)}
+                  placeholder="Key takeaway from this post"
+                  className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                />
+              )}
+            </div>
+          </div>
+
+          {/* Submit */}
+          <div className="flex gap-2 pt-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 py-2.5 px-4 text-stone-600 rounded-lg font-medium border border-stone-200 hover:bg-stone-50 text-sm"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={!nameEn.trim()}
+              className="flex-1 py-2.5 px-4 bg-orange-500 text-white rounded-lg font-medium hover:bg-orange-600 disabled:opacity-40 text-sm"
+            >
+              Add place
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
