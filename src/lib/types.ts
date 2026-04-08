@@ -68,8 +68,7 @@ export interface Member {
 export interface City {
   id: string;
   group_id: string;
-  name_en: string;
-  name_zh: string;
+  name: string;
   center_lat: number | null;
   center_lng: number | null;
   center_lat_gcj: number | null;
@@ -92,9 +91,7 @@ export interface Place {
   id: string;
   city_id: string;
   added_by: string;
-  name_en: string;
-  name_zh: string;
-  name_pinyin: string | null;
+  name: string;
   category: Category;
   priority: Priority;
   lat: number | null;
@@ -106,6 +103,7 @@ export interface Place {
   hours_note: string | null;
   reservation_required: boolean;
   reservation_url: string | null;
+  notes: string | null;
   summary: string | null;
   created_at: string;
 }

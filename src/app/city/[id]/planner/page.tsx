@@ -14,10 +14,7 @@ import {
   DragEndEvent,
   DragOverEvent,
 } from "@dnd-kit/core";
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
+// SortableContext used in DayColumn
 import { useCity, usePlaces, useDayPlans, useStore, useCurrentGroup } from "@/lib/use-store";
 import {
   createDayPlan,
@@ -30,7 +27,7 @@ import {
 } from "@/lib/store";
 import { CATEGORY_CONFIG } from "@/lib/constants";
 import DayColumn from "@/components/DayColumn";
-import SortableStop from "@/components/SortableStop";
+import DraggablePlace from "@/components/DraggablePlace";
 
 const UNPLANNED_ID = "__unplanned__";
 
@@ -177,14 +174,14 @@ export default function PlannerPage() {
               onClick={() => router.push(`/city/${cityId}`)}
               className="text-stone-400 hover:text-stone-600 text-sm"
             >
-              &larr; {city.name_en}
+              &larr; {city.name}
             </button>
           </div>
           <div className="flex items-center justify-between">
             <h1 className="text-xl font-semibold">
               Day Planner{" "}
               <span className="text-stone-400 font-normal">
-                — {city.name_en}
+                — {city.name}
               </span>
             </h1>
             <button
@@ -213,58 +210,21 @@ export default function PlannerPage() {
                 <h3 className="text-sm font-medium text-stone-500 mb-3">
                   Unplanned ({unplannedPlaces.length})
                 </h3>
-                <SortableContext
-                  items={unplannedPlaces.map((p) => p.id)}
-                  strategy={verticalListSortingStrategy}
-                  id={UNPLANNED_ID}
-                >
-                  <div className="space-y-2">
-                    {unplannedPlaces.map((place) => (
-                      <div
-                        key={place.id}
-                        className="bg-white rounded-lg border border-stone-200 px-3 py-2 cursor-grab active:cursor-grabbing hover:border-stone-300 hover:shadow-sm"
-                        id={place.id}
-                      >
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm">
-                            {CATEGORY_CONFIG[place.category].emoji}
-                          </span>
-                          <div className="min-w-0">
-                            <p className="text-sm font-medium truncate">
-                              {place.name_en}
-                            </p>
-                            {place.name_zh && (
-                              <p className="text-xs text-stone-400 truncate">
-                                {place.name_zh}
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                        {/* Quick-add buttons */}
-                        {dayPlans.length > 0 && (
-                          <div className="flex gap-1 mt-2 flex-wrap">
-                            {dayPlans.map((plan, i) => (
-                              <button
-                                key={plan.id}
-                                onClick={() =>
-                                  handleAddToDay(plan.id, place.id)
-                                }
-                                className="text-[10px] px-2 py-0.5 rounded bg-stone-100 text-stone-500 hover:bg-orange-100 hover:text-orange-600"
-                              >
-                                + D{i + 1}
-                              </button>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                    {unplannedPlaces.length === 0 && (
-                      <p className="text-xs text-stone-400 text-center py-8">
-                        All places assigned!
-                      </p>
-                    )}
-                  </div>
-                </SortableContext>
+                <div className="space-y-2">
+                  {unplannedPlaces.map((place) => (
+                    <DraggablePlace
+                      key={place.id}
+                      place={place}
+                      dayPlans={dayPlans}
+                      onAddToDay={handleAddToDay}
+                    />
+                  ))}
+                  {unplannedPlaces.length === 0 && (
+                    <p className="text-xs text-stone-400 text-center py-8">
+                      All places assigned!
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -309,7 +269,7 @@ export default function PlannerPage() {
                     {CATEGORY_CONFIG[activeDragPlace.category].emoji}
                   </span>
                   <p className="text-sm font-medium truncate">
-                    {activeDragPlace.name_en}
+                    {activeDragPlace.name}
                   </p>
                 </div>
               </div>

@@ -41,7 +41,12 @@ function loadData(): StoreData {
   if (typeof window === "undefined") return defaultData;
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return defaultData;
+    if (!raw) {
+      // Auto-seed on first load
+      const { SEED_DATA } = require("./seed");
+      saveData(SEED_DATA);
+      return SEED_DATA;
+    }
     return { ...defaultData, ...JSON.parse(raw) };
   } catch {
     return defaultData;
@@ -178,15 +183,14 @@ export function getCity(cityId: string): City | null {
 
 export function createCity(
   groupId: string,
-  city: Partial<City> & { name_en: string; name_zh: string }
+  city: Partial<City> & { name: string }
 ): City {
   const data = getData();
   const existing = data.cities.filter((c) => c.group_id === groupId);
   const newCity: City = {
     id: generateId(),
     group_id: groupId,
-    name_en: city.name_en,
-    name_zh: city.name_zh,
+    name: city.name,
     center_lat: city.center_lat ?? null,
     center_lng: city.center_lng ?? null,
     center_lat_gcj: city.center_lat_gcj ?? null,
@@ -245,16 +249,14 @@ export function getPlace(placeId: string): Place | null {
 export function createPlace(
   cityId: string,
   memberId: string,
-  place: Partial<Place> & { name_en: string; name_zh: string; category: Place["category"]; priority: Place["priority"] }
+  place: Partial<Place> & { name: string; category: Place["category"]; priority: Place["priority"] }
 ): Place {
   const data = getData();
   const newPlace: Place = {
     id: generateId(),
     city_id: cityId,
     added_by: memberId,
-    name_en: place.name_en,
-    name_zh: place.name_zh,
-    name_pinyin: place.name_pinyin ?? null,
+    name: place.name,
     category: place.category,
     priority: place.priority,
     lat: place.lat ?? null,
@@ -266,6 +268,7 @@ export function createPlace(
     hours_note: place.hours_note ?? null,
     reservation_required: place.reservation_required ?? false,
     reservation_url: place.reservation_url ?? null,
+    notes: place.notes ?? null,
     summary: place.summary ?? null,
     created_at: new Date().toISOString(),
   };

@@ -34,13 +34,8 @@ export default function PlaceCard({
           <div className="min-w-0">
             <div className="flex items-center gap-2">
               <span className="font-medium text-sm truncate">
-                {place.name_en}
+                {place.name}
               </span>
-              {place.name_zh && (
-                <span className="text-stone-400 text-sm truncate">
-                  {place.name_zh}
-                </span>
-              )}
             </div>
             <div className="flex items-center gap-2 mt-0.5">
               <span className={`text-xs px-1.5 py-0.5 rounded ${pri.color}`}>

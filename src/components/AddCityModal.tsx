@@ -9,8 +9,7 @@ interface Props {
 }
 
 export default function AddCityModal({ groupId, onClose }: Props) {
-  const [nameEn, setNameEn] = useState("");
-  const [nameZh, setNameZh] = useState("");
+  const [name, setName] = useState("");
   const [datesStart, setDatesStart] = useState("");
   const [datesEnd, setDatesEnd] = useState("");
   const [stayName, setStayName] = useState("");
@@ -18,10 +17,9 @@ export default function AddCityModal({ groupId, onClose }: Props) {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!nameEn.trim()) return;
+    if (!name.trim()) return;
     createCity(groupId, {
-      name_en: nameEn.trim(),
-      name_zh: nameZh.trim(),
+      name: name.trim(),
       dates_start: datesStart || null,
       dates_end: datesEnd || null,
       stay_name: stayName.trim() || null,
@@ -36,32 +34,18 @@ export default function AddCityModal({ groupId, onClose }: Props) {
       <div className="relative bg-white rounded-xl shadow-xl w-full max-w-md mx-4 p-6">
         <h2 className="text-lg font-semibold mb-4">Add a city</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-medium text-stone-500 mb-1">
-                City name (English)
-              </label>
-              <input
-                type="text"
-                value={nameEn}
-                onChange={(e) => setNameEn(e.target.value)}
-                placeholder="Shanghai"
-                className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
-                autoFocus
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-stone-500 mb-1">
-                City name (Chinese)
-              </label>
-              <input
-                type="text"
-                value={nameZh}
-                onChange={(e) => setNameZh(e.target.value)}
-                placeholder="上海"
-                className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
-              />
-            </div>
+          <div>
+            <label className="block text-xs font-medium text-stone-500 mb-1">
+              City name
+            </label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="e.g. Shanghai 上海"
+              className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+              autoFocus
+            />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
@@ -121,7 +105,7 @@ export default function AddCityModal({ groupId, onClose }: Props) {
             </button>
             <button
               type="submit"
-              disabled={!nameEn.trim()}
+              disabled={!name.trim()}
               className="flex-1 py-2.5 px-4 bg-orange-500 text-white rounded-lg font-medium hover:bg-orange-600 disabled:opacity-40 text-sm"
             >
               Add city

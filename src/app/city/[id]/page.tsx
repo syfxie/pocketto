@@ -51,7 +51,7 @@ export default function CityPage() {
     }
     switch (sortBy) {
       case "name":
-        result.sort((a, b) => a.name_en.localeCompare(b.name_en));
+        result.sort((a, b) => a.name.localeCompare(b.name));
         break;
       case "priority": {
         const order: Record<Priority, number> = { must_go: 0, want_to: 1, if_time: 2 };
@@ -93,8 +93,7 @@ export default function CityPage() {
           <div className="flex items-start justify-between">
             <div>
               <h1 className="text-xl font-semibold">
-                {city.name_en}{" "}
-                <span className="text-stone-400 font-normal">{city.name_zh}</span>
+                {city.name}
               </h1>
               <div className="flex items-center gap-4 mt-1 text-xs text-stone-500">
                 {(city.dates_start || city.dates_end) && (

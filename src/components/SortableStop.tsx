@@ -62,11 +62,11 @@ export default function SortableStop({ stop, place, index, onRemove }: Props) {
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1.5">
             <span className="text-sm">{cat.emoji}</span>
-            <p className="text-sm font-medium truncate">{place.name_en}</p>
+            <p className="text-sm font-medium truncate">{place.name}</p>
           </div>
-          {place.name_zh && (
+          {place.address && (
             <p className="text-xs text-stone-400 truncate ml-6">
-              {place.name_zh}
+              {place.address}
             </p>
           )}
         </div>

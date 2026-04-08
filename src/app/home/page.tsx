@@ -108,9 +108,8 @@ export default function HomePage() {
                 <div className="flex items-start justify-between mb-2">
                   <div>
                     <h3 className="font-semibold text-base group-hover:text-orange-600">
-                      {city.name_en}
+                      {city.name}
                     </h3>
-                    <p className="text-stone-400 text-sm">{city.name_zh}</p>
                   </div>
                 </div>
                 {(city.dates_start || city.dates_end) && (

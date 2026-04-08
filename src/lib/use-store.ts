@@ -1,20 +1,26 @@
 "use client";
 
-import { useSyncExternalStore, useCallback } from "react";
+import { useSyncExternalStore } from "react";
 import { getSnapshot, subscribe, StoreData } from "./store";
 
+const SERVER_SNAPSHOT: StoreData = {
+  groups: [],
+  members: [],
+  cities: [],
+  places: [],
+  sources: [],
+  dayPlans: [],
+  dayPlanStops: [],
+  currentGroupId: null,
+  currentMemberId: null,
+};
+
+function getServerSnapshot(): StoreData {
+  return SERVER_SNAPSHOT;
+}
+
 export function useStore(): StoreData {
-  return useSyncExternalStore(subscribe, getSnapshot, () => ({
-    groups: [],
-    members: [],
-    cities: [],
-    places: [],
-    sources: [],
-    dayPlans: [],
-    dayPlanStops: [],
-    currentGroupId: null,
-    currentMemberId: null,
-  }));
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }
 
 export function useCurrentGroup() {

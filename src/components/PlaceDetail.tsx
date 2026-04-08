@@ -29,11 +29,18 @@ export default function PlaceDetail({ placeId, memberId, onClose }: Props) {
         new Date(b.added_at).getTime() - new Date(a.added_at).getTime()
     );
   const [showAddSource, setShowAddSource] = useState(false);
+  const [editingNotes, setEditingNotes] = useState(false);
+  const [notesDraft, setNotesDraft] = useState(place?.notes || "");
   const [editingSummary, setEditingSummary] = useState(false);
   const [summaryDraft, setSummaryDraft] = useState(place?.summary || "");
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   if (!place) return null;
+
+  function handleSaveNotes() {
+    updatePlace(placeId, { notes: notesDraft.trim() || null });
+    setEditingNotes(false);
+  }
 
   function handleSaveSummary() {
     updatePlace(placeId, { summary: summaryDraft.trim() || null });
@@ -92,11 +99,58 @@ export default function PlaceDetail({ placeId, memberId, onClose }: Props) {
             </span>
           </div>
         )}
-        {place.name_pinyin && (
-          <div className="flex items-start gap-2">
-            <span className="text-stone-400 w-20 flex-shrink-0">Pinyin</span>
-            <span className="italic">{place.name_pinyin}</span>
+      </div>
+
+      {/* Notes */}
+      <div className="mb-5">
+        <div className="flex items-center justify-between mb-1.5">
+          <h4 className="text-xs font-medium text-stone-500 uppercase tracking-wide">
+            Notes
+          </h4>
+          {!editingNotes && (
+            <button
+              onClick={() => {
+                setNotesDraft(place.notes || "");
+                setEditingNotes(true);
+              }}
+              className="text-xs text-stone-400 hover:text-stone-600"
+            >
+              Edit
+            </button>
+          )}
+        </div>
+        {editingNotes ? (
+          <div>
+            <textarea
+              value={notesDraft}
+              onChange={(e) => setNotesDraft(e.target.value)}
+              placeholder="General notes about this place..."
+              className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 min-h-[80px] resize-y"
+              autoFocus
+            />
+            <div className="flex gap-2 mt-2">
+              <button
+                onClick={() => setEditingNotes(false)}
+                className="text-xs text-stone-500 hover:text-stone-700"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSaveNotes}
+                className="text-xs text-orange-500 hover:text-orange-600 font-medium"
+              >
+                Save
+              </button>
+            </div>
           </div>
+        ) : (
+          <p className="text-sm text-stone-600">
+            {place.notes || (
+              <span className="text-stone-400 italic">
+                No notes yet. Click edit to add general notes.
+              </span>
+            )}
+          </p>
         )}
       </div>
 

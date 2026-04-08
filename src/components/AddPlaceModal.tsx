@@ -24,8 +24,7 @@ const ACTIVITY_CATEGORIES: ActivityCategory[] = [
 ];
 
 export default function AddPlaceModal({ cityId, memberId, onClose }: Props) {
-  const [nameEn, setNameEn] = useState("");
-  const [nameZh, setNameZh] = useState("");
+  const [name, setName] = useState("");
   const [category, setCategory] = useState<Category>("dinner");
   const [priority, setPriority] = useState<Priority>("want_to");
   const [address, setAddress] = useState("");
@@ -37,11 +36,10 @@ export default function AddPlaceModal({ cityId, memberId, onClose }: Props) {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!nameEn.trim()) return;
+    if (!name.trim()) return;
 
     const place = createPlace(cityId, memberId, {
-      name_en: nameEn.trim(),
-      name_zh: nameZh.trim(),
+      name: name.trim(),
       category,
       priority,
       address: address.trim() || null,
@@ -69,33 +67,19 @@ export default function AddPlaceModal({ cityId, memberId, onClose }: Props) {
       <div className="relative bg-white rounded-xl shadow-xl w-full max-w-lg mx-4 p-6 max-h-[90vh] overflow-y-auto">
         <h2 className="text-lg font-semibold mb-4">Add a place</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Names */}
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-medium text-stone-500 mb-1">
-                Name (English)
-              </label>
-              <input
-                type="text"
-                value={nameEn}
-                onChange={(e) => setNameEn(e.target.value)}
-                placeholder="Grandma's Home"
-                className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
-                autoFocus
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-stone-500 mb-1">
-                Name (Chinese)
-              </label>
-              <input
-                type="text"
-                value={nameZh}
-                onChange={(e) => setNameZh(e.target.value)}
-                placeholder="外婆家"
-                className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
-              />
-            </div>
+          {/* Name */}
+          <div>
+            <label className="block text-xs font-medium text-stone-500 mb-1">
+              Name
+            </label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="e.g. 外婆家 Grandma's Home"
+              className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+              autoFocus
+            />
           </div>
 
           {/* Category */}
@@ -228,7 +212,7 @@ export default function AddPlaceModal({ cityId, memberId, onClose }: Props) {
             </button>
             <button
               type="submit"
-              disabled={!nameEn.trim()}
+              disabled={!name.trim()}
               className="flex-1 py-2.5 px-4 bg-orange-500 text-white rounded-lg font-medium hover:bg-orange-600 disabled:opacity-40 text-sm"
             >
               Add place
