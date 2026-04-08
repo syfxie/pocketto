@@ -1,10 +1,11 @@
-import { StoreData } from "./store";
+// This file is no longer used at runtime — seed data lives in Supabase (see supabase/seed.sql).
+// Keeping for reference only.
 
 const SEED_GROUP_ID = "seed-group-001";
 const SEED_MEMBER_ID = "seed-member-001";
 const SEED_CITY_ID = "seed-city-dali";
 
-export const SEED_DATA: StoreData = {
+export const SEED_DATA = {
   currentGroupId: SEED_GROUP_ID,
   currentMemberId: SEED_MEMBER_ID,
   groups: [

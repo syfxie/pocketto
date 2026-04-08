@@ -50,7 +50,7 @@ export default function DraggablePlace({ place, dayPlans, onAddToDay }: Props) {
                 e.stopPropagation();
                 onAddToDay(plan.id, place.id);
               }}
-              className="text-[10px] px-2 py-0.5 rounded bg-stone-100 text-stone-500 hover:bg-orange-100 hover:text-orange-600"
+              className="text-[10px] px-2 py-0.5 rounded bg-stone-100 text-stone-500 hover:bg-green-50 hover:text-green-700"
             >
               + D{i + 1}
             </button>

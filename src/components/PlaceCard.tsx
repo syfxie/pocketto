@@ -24,7 +24,7 @@ export default function PlaceCard({
       onClick={onClick}
       className={`w-full text-left px-4 py-3 rounded-lg border transition-all ${
         isSelected
-          ? "border-orange-300 bg-orange-50/50 shadow-sm"
+          ? "border-green-300 bg-green-50/50 shadow-sm"
           : "border-stone-200 bg-white hover:border-stone-300 hover:shadow-sm"
       }`}
     >

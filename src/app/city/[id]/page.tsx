@@ -113,7 +113,7 @@ export default function CityPage() {
               </button>
               <button
                 onClick={() => setShowAddPlace(true)}
-                className="text-sm px-4 py-2 bg-orange-500 text-white rounded-lg font-medium hover:bg-orange-600"
+                className="text-sm px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700"
               >
                 + Add place
               </button>
@@ -203,7 +203,7 @@ export default function CityPage() {
               {places.length === 0 && (
                 <button
                   onClick={() => setShowAddPlace(true)}
-                  className="text-sm text-orange-500 hover:text-orange-600 font-medium"
+                  className="text-sm text-green-600 hover:text-green-700 font-medium"
                 >
                   + Add your first place
                 </button>

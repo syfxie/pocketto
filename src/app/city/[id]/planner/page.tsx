@@ -73,17 +73,17 @@ export default function PlannerPage() {
 
   if (!city || !member) return null;
 
-  function handleAddDay() {
+  async function handleAddDay() {
     const num = dayPlans.length + 1;
-    createDayPlan(cityId, `Day ${num}`);
+    await createDayPlan(cityId, `Day ${num}`);
   }
 
-  function handleAddToDay(planId: string, placeId: string) {
-    addStopToPlan(planId, placeId);
+  async function handleAddToDay(planId: string, placeId: string) {
+    await addStopToPlan(planId, placeId);
   }
 
-  function handleRemoveStop(stopId: string) {
-    removeStopFromPlan(stopId);
+  async function handleRemoveStop(stopId: string) {
+    await removeStopFromPlan(stopId);
   }
 
   // Find which container (plan ID or UNPLANNED_ID) an item belongs to
@@ -106,7 +106,7 @@ export default function PlannerPage() {
     // Handled in dragEnd for simplicity
   }
 
-  function handleDragEnd(event: DragEndEvent) {
+  async function handleDragEnd(event: DragEndEvent) {
     setActiveStopId(null);
     const { active, over } = event;
     if (!over) return;
@@ -123,7 +123,7 @@ export default function PlannerPage() {
     if (activeContainer === UNPLANNED_ID && overContainer !== UNPLANNED_ID) {
       const targetPlanId =
         dayPlans.some((d) => d.id === overId) ? overId : overContainer;
-      addStopToPlan(targetPlanId, activeId);
+      await addStopToPlan(targetPlanId, activeId);
       return;
     }
 
@@ -135,7 +135,7 @@ export default function PlannerPage() {
     ) {
       const targetPlanId =
         dayPlans.some((d) => d.id === overId) ? overId : overContainer;
-      moveStopToPlan(activeId, targetPlanId);
+      await moveStopToPlan(activeId, targetPlanId);
       return;
     }
 
@@ -149,7 +149,7 @@ export default function PlannerPage() {
       const newOrder = [...stops.map((s) => s.id)];
       newOrder.splice(oldIndex, 1);
       newOrder.splice(overStop, 0, activeId);
-      reorderStops(activeContainer, newOrder);
+      await reorderStops(activeContainer, newOrder);
     }
   }
 
@@ -186,7 +186,7 @@ export default function PlannerPage() {
             </h1>
             <button
               onClick={handleAddDay}
-              className="text-sm px-4 py-2 bg-orange-500 text-white rounded-lg font-medium hover:bg-orange-600"
+              className="text-sm px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700"
             >
               + Add day
             </button>
@@ -252,7 +252,7 @@ export default function PlannerPage() {
                   </p>
                   <button
                     onClick={handleAddDay}
-                    className="text-sm text-orange-500 hover:text-orange-600 font-medium"
+                    className="text-sm text-green-600 hover:text-green-700 font-medium"
                   >
                     + Add your first day
                   </button>
@@ -263,7 +263,7 @@ export default function PlannerPage() {
 
           <DragOverlay>
             {activeDragPlace && (
-              <div className="bg-white rounded-lg border border-orange-300 shadow-lg px-3 py-2 w-64 opacity-90">
+              <div className="bg-white rounded-lg border border-green-300 shadow-lg px-3 py-2 w-64 opacity-90">
                 <div className="flex items-center gap-2">
                   <span className="text-sm">
                     {CATEGORY_CONFIG[activeDragPlace.category].emoji}

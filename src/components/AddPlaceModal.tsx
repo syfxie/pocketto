@@ -34,11 +34,11 @@ export default function AddPlaceModal({ cityId, memberId, onClose }: Props) {
   const [sourceUrl, setSourceUrl] = useState("");
   const [sourceTakeaway, setSourceTakeaway] = useState("");
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!name.trim()) return;
 
-    const place = createPlace(cityId, memberId, {
+    const place = await createPlace(cityId, memberId, {
       name: name.trim(),
       category,
       priority,
@@ -47,9 +47,9 @@ export default function AddPlaceModal({ cityId, memberId, onClose }: Props) {
     });
 
     // Attach first source if provided
-    if (sourceUrl.trim()) {
+    if (place && sourceUrl.trim()) {
       const parsed = parseSourceUrl(sourceUrl.trim());
-      createSource(place.id, memberId, {
+      await createSource(place.id, memberId, {
         platform: parsed.platform,
         url: sourceUrl.trim(),
         author: parsed.author,
@@ -77,7 +77,7 @@ export default function AddPlaceModal({ cityId, memberId, onClose }: Props) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. 外婆家 Grandma's Home"
-              className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
               autoFocus
             />
           </div>
@@ -98,7 +98,7 @@ export default function AddPlaceModal({ cityId, memberId, onClose }: Props) {
                   onClick={() => setCategory(cat)}
                   className={`text-xs px-2.5 py-1 rounded-full border ${
                     category === cat
-                      ? "border-orange-400 bg-orange-50 text-orange-700"
+                      ? "border-green-400 bg-green-50 text-green-800"
                       : "border-stone-200 text-stone-600 hover:bg-stone-100"
                   }`}
                 >
@@ -117,7 +117,7 @@ export default function AddPlaceModal({ cityId, memberId, onClose }: Props) {
                   onClick={() => setCategory(cat)}
                   className={`text-xs px-2.5 py-1 rounded-full border ${
                     category === cat
-                      ? "border-orange-400 bg-orange-50 text-orange-700"
+                      ? "border-green-400 bg-green-50 text-green-800"
                       : "border-stone-200 text-stone-600 hover:bg-stone-100"
                   }`}
                 >
@@ -140,7 +140,7 @@ export default function AddPlaceModal({ cityId, memberId, onClose }: Props) {
                   onClick={() => setPriority(p)}
                   className={`text-xs px-3 py-1.5 rounded-full border ${
                     priority === p
-                      ? "border-orange-400 bg-orange-50 text-orange-700"
+                      ? "border-green-400 bg-green-50 text-green-800"
                       : `border-stone-200 ${PRIORITY_CONFIG[p].color} hover:opacity-80`
                   }`}
                 >
@@ -160,7 +160,7 @@ export default function AddPlaceModal({ cityId, memberId, onClose }: Props) {
               value={address}
               onChange={(e) => setAddress(e.target.value)}
               placeholder="123 Nanjing Road"
-              className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
             />
           </div>
           <div>
@@ -172,7 +172,7 @@ export default function AddPlaceModal({ cityId, memberId, onClose }: Props) {
               value={hoursNote}
               onChange={(e) => setHoursNote(e.target.value)}
               placeholder="e.g. Closed 2-5pm, weekdays only"
-              className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
             />
           </div>
 
@@ -187,7 +187,7 @@ export default function AddPlaceModal({ cityId, memberId, onClose }: Props) {
                 value={sourceUrl}
                 onChange={(e) => setSourceUrl(e.target.value)}
                 placeholder="Paste link from TikTok, RedNote, Instagram..."
-                className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
               />
               {sourceUrl && (
                 <input
@@ -195,7 +195,7 @@ export default function AddPlaceModal({ cityId, memberId, onClose }: Props) {
                   value={sourceTakeaway}
                   onChange={(e) => setSourceTakeaway(e.target.value)}
                   placeholder="Key takeaway from this post"
-                  className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
                 />
               )}
             </div>
@@ -213,7 +213,7 @@ export default function AddPlaceModal({ cityId, memberId, onClose }: Props) {
             <button
               type="submit"
               disabled={!name.trim()}
-              className="flex-1 py-2.5 px-4 bg-orange-500 text-white rounded-lg font-medium hover:bg-orange-600 disabled:opacity-40 text-sm"
+              className="flex-1 py-2.5 px-4 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 disabled:opacity-40 text-sm"
             >
               Add place
             </button>

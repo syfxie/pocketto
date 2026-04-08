@@ -20,17 +20,17 @@ export default function LandingPage() {
     }
   }, [store.currentGroupId, store.currentMemberId, router]);
 
-  function handleCreate(e: React.FormEvent) {
+  async function handleCreate(e: React.FormEvent) {
     e.preventDefault();
     if (!name.trim() || !nickname.trim()) return;
-    createGroup(name.trim(), nickname.trim());
-    router.push("/home");
+    const result = await createGroup(name.trim(), nickname.trim());
+    if (result) router.push("/home");
   }
 
-  function handleJoin(e: React.FormEvent) {
+  async function handleJoin(e: React.FormEvent) {
     e.preventDefault();
     if (!inviteCode.trim() || !nickname.trim()) return;
-    const result = joinGroup(inviteCode.trim(), nickname.trim());
+    const result = await joinGroup(inviteCode.trim(), nickname.trim());
     if (!result) {
       setError("Invalid invite code. Check and try again.");
       return;
@@ -52,7 +52,7 @@ export default function LandingPage() {
           <div className="space-y-3">
             <button
               onClick={() => setMode("create")}
-              className="w-full py-3 px-4 bg-orange-500 text-white rounded-lg font-medium hover:bg-orange-600 active:scale-[0.98]"
+              className="w-full py-3 px-4 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 active:scale-[0.98]"
             >
               Create a new group
             </button>
@@ -76,7 +76,7 @@ export default function LandingPage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="e.g. Sophie's China Trips"
-                className="w-full px-3 py-2.5 rounded-lg border border-stone-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className="w-full px-3 py-2.5 rounded-lg border border-stone-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent"
                 autoFocus
               />
             </div>
@@ -89,7 +89,7 @@ export default function LandingPage() {
                 value={nickname}
                 onChange={(e) => setNickname(e.target.value)}
                 placeholder="e.g. Sophie"
-                className="w-full px-3 py-2.5 rounded-lg border border-stone-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className="w-full px-3 py-2.5 rounded-lg border border-stone-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent"
               />
             </div>
             <div className="flex gap-2 pt-1">
@@ -103,7 +103,7 @@ export default function LandingPage() {
               <button
                 type="submit"
                 disabled={!name.trim() || !nickname.trim()}
-                className="flex-1 py-2.5 px-4 bg-orange-500 text-white rounded-lg font-medium hover:bg-orange-600 disabled:opacity-40 disabled:cursor-not-allowed text-sm"
+                className="flex-1 py-2.5 px-4 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 disabled:opacity-40 disabled:cursor-not-allowed text-sm"
               >
                 Create
               </button>
@@ -126,7 +126,7 @@ export default function LandingPage() {
                 }}
                 placeholder="e.g. X7K2M9"
                 maxLength={6}
-                className="w-full px-3 py-2.5 rounded-lg border border-stone-200 bg-white text-sm font-mono text-center tracking-[0.3em] uppercase focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className="w-full px-3 py-2.5 rounded-lg border border-stone-200 bg-white text-sm font-mono text-center tracking-[0.3em] uppercase focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent"
                 autoFocus
               />
               {error && (
@@ -142,7 +142,7 @@ export default function LandingPage() {
                 value={nickname}
                 onChange={(e) => setNickname(e.target.value)}
                 placeholder="e.g. Alex"
-                className="w-full px-3 py-2.5 rounded-lg border border-stone-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className="w-full px-3 py-2.5 rounded-lg border border-stone-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent"
               />
             </div>
             <div className="flex gap-2 pt-1">
@@ -156,7 +156,7 @@ export default function LandingPage() {
               <button
                 type="submit"
                 disabled={inviteCode.length < 6 || !nickname.trim()}
-                className="flex-1 py-2.5 px-4 bg-orange-500 text-white rounded-lg font-medium hover:bg-orange-600 disabled:opacity-40 disabled:cursor-not-allowed text-sm"
+                className="flex-1 py-2.5 px-4 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 disabled:opacity-40 disabled:cursor-not-allowed text-sm"
               >
                 Join
               </button>

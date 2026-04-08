@@ -13,6 +13,7 @@ const SERVER_SNAPSHOT: StoreData = {
   dayPlanStops: [],
   currentGroupId: null,
   currentMemberId: null,
+  loaded: false,
 };
 
 function getServerSnapshot(): StoreData {

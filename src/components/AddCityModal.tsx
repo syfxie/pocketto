@@ -15,10 +15,10 @@ export default function AddCityModal({ groupId, onClose }: Props) {
   const [stayName, setStayName] = useState("");
   const [stayAddress, setStayAddress] = useState("");
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!name.trim()) return;
-    createCity(groupId, {
+    await createCity(groupId, {
       name: name.trim(),
       dates_start: datesStart || null,
       dates_end: datesEnd || null,
@@ -43,7 +43,7 @@ export default function AddCityModal({ groupId, onClose }: Props) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Shanghai 上海"
-              className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
               autoFocus
             />
           </div>
@@ -57,7 +57,7 @@ export default function AddCityModal({ groupId, onClose }: Props) {
                 type="date"
                 value={datesStart}
                 onChange={(e) => setDatesStart(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
               />
             </div>
             <div>
@@ -68,7 +68,7 @@ export default function AddCityModal({ groupId, onClose }: Props) {
                 type="date"
                 value={datesEnd}
                 onChange={(e) => setDatesEnd(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
               />
             </div>
           </div>
@@ -83,14 +83,14 @@ export default function AddCityModal({ groupId, onClose }: Props) {
                 value={stayName}
                 onChange={(e) => setStayName(e.target.value)}
                 placeholder="Hotel / Airbnb name"
-                className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
               />
               <input
                 type="text"
                 value={stayAddress}
                 onChange={(e) => setStayAddress(e.target.value)}
                 placeholder="Address"
-                className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
               />
             </div>
           </div>
@@ -106,7 +106,7 @@ export default function AddCityModal({ groupId, onClose }: Props) {
             <button
               type="submit"
               disabled={!name.trim()}
-              className="flex-1 py-2.5 px-4 bg-orange-500 text-white rounded-lg font-medium hover:bg-orange-600 disabled:opacity-40 text-sm"
+              className="flex-1 py-2.5 px-4 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 disabled:opacity-40 text-sm"
             >
               Add city
             </button>

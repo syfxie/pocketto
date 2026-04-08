@@ -55,14 +55,14 @@ export default function HomePage() {
         </div>
         {showInvite && (
           <div className="max-w-4xl mx-auto px-6 pb-4">
-            <div className="inline-flex items-center gap-3 bg-orange-50 rounded-lg px-4 py-2.5">
-              <span className="text-xs text-orange-700">Share this code:</span>
-              <span className="font-mono text-lg font-semibold tracking-[0.2em] text-orange-600">
+            <div className="inline-flex items-center gap-3 bg-green-50 rounded-lg px-4 py-2.5">
+              <span className="text-xs text-green-800">Share this code:</span>
+              <span className="font-mono text-lg font-semibold tracking-[0.2em] text-green-700">
                 {group.invite_code}
               </span>
               <button
                 onClick={() => navigator.clipboard.writeText(group.invite_code)}
-                className="text-xs text-orange-600 hover:text-orange-700 underline"
+                className="text-xs text-green-700 hover:text-green-800 underline"
               >
                 Copy
               </button>
@@ -79,7 +79,7 @@ export default function HomePage() {
           </h2>
           <button
             onClick={() => setShowAddCity(true)}
-            className="text-sm px-4 py-2 bg-orange-500 text-white rounded-lg font-medium hover:bg-orange-600"
+            className="text-sm px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700"
           >
             + Add city
           </button>
@@ -92,7 +92,7 @@ export default function HomePage() {
             </p>
             <button
               onClick={() => setShowAddCity(true)}
-              className="text-sm text-orange-500 hover:text-orange-600 font-medium"
+              className="text-sm text-green-600 hover:text-green-700 font-medium"
             >
               + Add your first city
             </button>
@@ -107,7 +107,7 @@ export default function HomePage() {
               >
                 <div className="flex items-start justify-between mb-2">
                   <div>
-                    <h3 className="font-semibold text-base group-hover:text-orange-600">
+                    <h3 className="font-semibold text-base group-hover:text-green-700">
                       {city.name}
                     </h3>
                   </div>

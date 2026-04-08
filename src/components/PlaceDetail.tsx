@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useStore } from "@/lib/use-store";
-import { getPlace, updatePlace, deletePlace } from "@/lib/store";
+import { updatePlace, deletePlace } from "@/lib/store";
 import {
   CATEGORY_CONFIG,
   PRIORITY_CONFIG,
@@ -37,18 +37,18 @@ export default function PlaceDetail({ placeId, memberId, onClose }: Props) {
 
   if (!place) return null;
 
-  function handleSaveNotes() {
-    updatePlace(placeId, { notes: notesDraft.trim() || null });
+  async function handleSaveNotes() {
+    await updatePlace(placeId, { notes: notesDraft.trim() || null });
     setEditingNotes(false);
   }
 
-  function handleSaveSummary() {
-    updatePlace(placeId, { summary: summaryDraft.trim() || null });
+  async function handleSaveSummary() {
+    await updatePlace(placeId, { summary: summaryDraft.trim() || null });
     setEditingSummary(false);
   }
 
-  function handleDelete() {
-    deletePlace(placeId);
+  async function handleDelete() {
+    await deletePlace(placeId);
     onClose();
   }
 
@@ -90,7 +90,7 @@ export default function PlaceDetail({ placeId, memberId, onClose }: Props) {
                     href={place.reservation_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-orange-500 hover:underline"
+                    className="text-green-600 hover:underline"
                   >
                     Book here
                   </a>
@@ -125,7 +125,7 @@ export default function PlaceDetail({ placeId, memberId, onClose }: Props) {
               value={notesDraft}
               onChange={(e) => setNotesDraft(e.target.value)}
               placeholder="General notes about this place..."
-              className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 min-h-[80px] resize-y"
+              className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-green-600 min-h-[80px] resize-y"
               autoFocus
             />
             <div className="flex gap-2 mt-2">
@@ -137,7 +137,7 @@ export default function PlaceDetail({ placeId, memberId, onClose }: Props) {
               </button>
               <button
                 onClick={handleSaveNotes}
-                className="text-xs text-orange-500 hover:text-orange-600 font-medium"
+                className="text-xs text-green-600 hover:text-green-700 font-medium"
               >
                 Save
               </button>
@@ -178,7 +178,7 @@ export default function PlaceDetail({ placeId, memberId, onClose }: Props) {
               value={summaryDraft}
               onChange={(e) => setSummaryDraft(e.target.value)}
               placeholder="Add your notes — what to order, when to go, tips..."
-              className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 min-h-[80px] resize-y"
+              className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-green-600 min-h-[80px] resize-y"
               autoFocus
             />
             <div className="flex gap-2 mt-2">
@@ -190,7 +190,7 @@ export default function PlaceDetail({ placeId, memberId, onClose }: Props) {
               </button>
               <button
                 onClick={handleSaveSummary}
-                className="text-xs text-orange-500 hover:text-orange-600 font-medium"
+                className="text-xs text-green-600 hover:text-green-700 font-medium"
               >
                 Save
               </button>
@@ -215,7 +215,7 @@ export default function PlaceDetail({ placeId, memberId, onClose }: Props) {
           </h4>
           <button
             onClick={() => setShowAddSource(!showAddSource)}
-            className="text-xs text-orange-500 hover:text-orange-600 font-medium"
+            className="text-xs text-green-600 hover:text-green-700 font-medium"
           >
             {showAddSource ? "Cancel" : "+ Add source"}
           </button>
@@ -274,7 +274,7 @@ export default function PlaceDetail({ placeId, memberId, onClose }: Props) {
                       href={source.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-xs text-stone-400 hover:text-orange-500"
+                      className="text-xs text-stone-400 hover:text-green-600"
                     >
                       Open ↗
                     </a>

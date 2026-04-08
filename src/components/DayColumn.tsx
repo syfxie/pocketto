@@ -52,7 +52,7 @@ export default function DayColumn({
         ref={setNodeRef}
         className={`rounded-xl border p-4 h-full transition-colors ${
           isOver
-            ? "border-orange-300 bg-orange-50/50"
+            ? "border-green-300 bg-green-50/50"
             : "border-stone-200 bg-white"
         }`}
       >
@@ -66,7 +66,7 @@ export default function DayColumn({
                 onChange={(e) => setLabelDraft(e.target.value)}
                 onBlur={handleSaveLabel}
                 onKeyDown={(e) => e.key === "Enter" && handleSaveLabel()}
-                className="text-sm font-medium w-full px-1 py-0.5 rounded border border-orange-300 focus:outline-none"
+                className="text-sm font-medium w-full px-1 py-0.5 rounded border border-green-300 focus:outline-none"
                 autoFocus
               />
             ) : (
@@ -75,7 +75,7 @@ export default function DayColumn({
                   setLabelDraft(plan.label);
                   setEditingLabel(true);
                 }}
-                className="text-sm font-medium text-stone-700 hover:text-orange-600 text-left"
+                className="text-sm font-medium text-stone-700 hover:text-green-700 text-left"
               >
                 {plan.label}
               </button>

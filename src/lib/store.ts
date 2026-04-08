@@ -9,8 +9,9 @@ import {
   DayPlan,
   DayPlanStop,
 } from "./types";
+import { supabase } from "./supabase";
 
-const STORAGE_KEY = "pocketto_data";
+const SESSION_KEY = "pocketto_session";
 
 export interface StoreData {
   groups: Group[];
@@ -20,9 +21,9 @@ export interface StoreData {
   sources: Source[];
   dayPlans: DayPlan[];
   dayPlanStops: DayPlanStop[];
-  // Current session
   currentGroupId: string | null;
   currentMemberId: string | null;
+  loaded: boolean;
 }
 
 const defaultData: StoreData = {
@@ -35,41 +36,19 @@ const defaultData: StoreData = {
   dayPlanStops: [],
   currentGroupId: null,
   currentMemberId: null,
+  loaded: false,
 };
 
-function loadData(): StoreData {
-  if (typeof window === "undefined") return defaultData;
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) {
-      // Auto-seed on first load
-      const { SEED_DATA } = require("./seed");
-      saveData(SEED_DATA);
-      return SEED_DATA;
-    }
-    return { ...defaultData, ...JSON.parse(raw) };
-  } catch {
-    return defaultData;
-  }
-}
-
-function saveData(data: StoreData): void {
-  if (typeof window === "undefined") return;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-}
-
-let _data: StoreData | null = null;
+let _data: StoreData = { ...defaultData };
 let _listeners: (() => void)[] = [];
 
-function getData(): StoreData {
-  if (!_data) _data = loadData();
-  return _data;
+function notify(): void {
+  _listeners.forEach((fn) => fn());
 }
 
-function setData(data: StoreData): void {
-  _data = data;
-  saveData(data);
-  _listeners.forEach((fn) => fn());
+function setData(updates: Partial<StoreData>): void {
+  _data = { ..._data, ...updates };
+  notify();
 }
 
 export function subscribe(listener: () => void): () => void {
@@ -80,14 +59,107 @@ export function subscribe(listener: () => void): () => void {
 }
 
 export function getSnapshot(): StoreData {
-  return getData();
+  return _data;
+}
+
+// --- Session (localStorage only — just tracks which group/member you are) ---
+
+function loadSession(): { groupId: string | null; memberId: string | null } {
+  if (typeof window === "undefined") return { groupId: null, memberId: null };
+  try {
+    const raw = localStorage.getItem(SESSION_KEY);
+    if (!raw) return { groupId: null, memberId: null };
+    return JSON.parse(raw);
+  } catch {
+    return { groupId: null, memberId: null };
+  }
+}
+
+function saveSession(groupId: string | null, memberId: string | null): void {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(SESSION_KEY, JSON.stringify({ groupId, memberId }));
+}
+
+// --- Init: load session + fetch data from Supabase ---
+
+export async function initStore(): Promise<void> {
+  const session = loadSession();
+  _data = { ..._data, currentGroupId: session.groupId, currentMemberId: session.memberId };
+  notify();
+
+  if (session.groupId) {
+    await fetchGroupData(session.groupId);
+  }
+  setData({ loaded: true });
+}
+
+async function fetchGroupData(groupId: string): Promise<void> {
+  const [
+    { data: groups },
+    { data: members },
+    { data: cities },
+  ] = await Promise.all([
+    supabase.from("groups").select("*").eq("id", groupId),
+    supabase.from("members").select("*").eq("group_id", groupId),
+    supabase.from("cities").select("*").eq("group_id", groupId).order("sort_order"),
+  ]);
+
+  const cityIds = (cities || []).map((c: City) => c.id);
+
+  let places: Place[] = [];
+  let sources: Source[] = [];
+  let dayPlans: DayPlan[] = [];
+  let dayPlanStops: DayPlanStop[] = [];
+
+  if (cityIds.length > 0) {
+    const [
+      { data: placesData },
+      { data: dayPlansData },
+    ] = await Promise.all([
+      supabase.from("places").select("*").in("city_id", cityIds),
+      supabase.from("day_plans").select("*").in("city_id", cityIds).order("sort_order"),
+    ]);
+
+    places = placesData || [];
+    dayPlans = dayPlansData || [];
+
+    const placeIds = places.map((p) => p.id);
+    const dayPlanIds = dayPlans.map((d) => d.id);
+
+    const [
+      { data: sourcesData },
+      { data: stopsData },
+    ] = await Promise.all([
+      placeIds.length > 0
+        ? supabase.from("sources").select("*").in("place_id", placeIds)
+        : Promise.resolve({ data: [] }),
+      dayPlanIds.length > 0
+        ? supabase.from("day_plan_stops").select("*").in("day_plan_id", dayPlanIds).order("sort_order")
+        : Promise.resolve({ data: [] }),
+    ]);
+
+    sources = sourcesData || [];
+    dayPlanStops = stopsData || [];
+  }
+
+  setData({
+    groups: groups || [],
+    members: members || [],
+    cities: cities || [],
+    places: places.map(ensurePlaceDefaults),
+    sources,
+    dayPlans,
+    dayPlanStops,
+  });
+}
+
+// Supabase returns snake_case which matches our types directly.
+// Just ensure defaults for nullable array/boolean fields.
+function ensurePlaceDefaults(p: Place): Place {
+  return { ...p, payment: p.payment || [], reservation_required: p.reservation_required || false };
 }
 
 // --- Helpers ---
-
-function generateId(): string {
-  return crypto.randomUUID();
-}
 
 function generateInviteCode(): string {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -100,338 +172,297 @@ function generateInviteCode(): string {
 
 // --- Group ---
 
-export function createGroup(name: string, nickname: string): { group: Group; member: Member } {
-  const data = getData();
-  const group: Group = {
-    id: generateId(),
-    name,
-    invite_code: generateInviteCode(),
-    created_at: new Date().toISOString(),
-  };
-  const member: Member = {
-    id: generateId(),
-    group_id: group.id,
-    nickname,
-    is_owner: true,
-    created_at: new Date().toISOString(),
-  };
+export async function createGroup(name: string, nickname: string): Promise<{ group: Group; member: Member } | null> {
+  const invite_code = generateInviteCode();
+
+  const { data: group, error: groupErr } = await supabase
+    .from("groups")
+    .insert({ name, invite_code })
+    .select()
+    .single();
+
+  if (groupErr || !group) return null;
+
+  const { data: member, error: memberErr } = await supabase
+    .from("members")
+    .insert({ group_id: group.id, nickname, is_owner: true })
+    .select()
+    .single();
+
+  if (memberErr || !member) return null;
+
+  saveSession(group.id, member.id);
   setData({
-    ...data,
-    groups: [...data.groups, group],
-    members: [...data.members, member],
+    groups: [group],
+    members: [member],
     currentGroupId: group.id,
     currentMemberId: member.id,
   });
+
   return { group, member };
 }
 
-export function joinGroup(inviteCode: string, nickname: string): { group: Group; member: Member } | null {
-  const data = getData();
-  const group = data.groups.find(
-    (g) => g.invite_code.toUpperCase() === inviteCode.toUpperCase()
-  );
+export async function joinGroup(inviteCode: string, nickname: string): Promise<{ group: Group; member: Member } | null> {
+  const { data: group } = await supabase
+    .from("groups")
+    .select("*")
+    .ilike("invite_code", inviteCode)
+    .single();
+
   if (!group) return null;
-  const member: Member = {
-    id: generateId(),
-    group_id: group.id,
-    nickname,
-    is_owner: false,
-    created_at: new Date().toISOString(),
-  };
+
+  const { data: member, error } = await supabase
+    .from("members")
+    .insert({ group_id: group.id, nickname, is_owner: false })
+    .select()
+    .single();
+
+  if (error || !member) return null;
+
+  saveSession(group.id, member.id);
+  await fetchGroupData(group.id);
   setData({
-    ...data,
-    members: [...data.members, member],
     currentGroupId: group.id,
     currentMemberId: member.id,
   });
+
   return { group, member };
-}
-
-export function getCurrentGroup(): Group | null {
-  const data = getData();
-  if (!data.currentGroupId) return null;
-  return data.groups.find((g) => g.id === data.currentGroupId) ?? null;
-}
-
-export function getCurrentMember(): Member | null {
-  const data = getData();
-  if (!data.currentMemberId) return null;
-  return data.members.find((m) => m.id === data.currentMemberId) ?? null;
-}
-
-export function setCurrentSession(groupId: string, memberId: string): void {
-  const data = getData();
-  setData({ ...data, currentGroupId: groupId, currentMemberId: memberId });
 }
 
 export function clearSession(): void {
-  const data = getData();
-  setData({ ...data, currentGroupId: null, currentMemberId: null });
+  saveSession(null, null);
+  setData({ ...defaultData, loaded: true });
 }
 
 // --- Cities ---
 
-export function getCities(groupId: string): City[] {
-  return getData()
-    .cities.filter((c) => c.group_id === groupId)
-    .sort((a, b) => a.sort_order - b.sort_order);
-}
-
-export function getCity(cityId: string): City | null {
-  return getData().cities.find((c) => c.id === cityId) ?? null;
-}
-
-export function createCity(
+export async function createCity(
   groupId: string,
   city: Partial<City> & { name: string }
-): City {
-  const data = getData();
-  const existing = data.cities.filter((c) => c.group_id === groupId);
-  const newCity: City = {
-    id: generateId(),
-    group_id: groupId,
-    name: city.name,
-    center_lat: city.center_lat ?? null,
-    center_lng: city.center_lng ?? null,
-    center_lat_gcj: city.center_lat_gcj ?? null,
-    center_lng_gcj: city.center_lng_gcj ?? null,
-    dates_start: city.dates_start ?? null,
-    dates_end: city.dates_end ?? null,
-    sort_order: existing.length,
-    stay_name: city.stay_name ?? null,
-    stay_address: city.stay_address ?? null,
-    stay_lat: city.stay_lat ?? null,
-    stay_lng: city.stay_lng ?? null,
-    stay_lat_gcj: city.stay_lat_gcj ?? null,
-    stay_lng_gcj: city.stay_lng_gcj ?? null,
-    stay_checkin: city.stay_checkin ?? null,
-    stay_checkout: city.stay_checkout ?? null,
-    created_at: new Date().toISOString(),
-  };
-  setData({ ...data, cities: [...data.cities, newCity] });
-  return newCity;
+): Promise<City | null> {
+  const sort_order = _data.cities.filter((c) => c.group_id === groupId).length;
+
+  const { data, error } = await supabase
+    .from("cities")
+    .insert({
+      group_id: groupId,
+      name: city.name,
+      dates_start: city.dates_start || null,
+      dates_end: city.dates_end || null,
+      sort_order,
+      stay_name: city.stay_name || null,
+      stay_address: city.stay_address || null,
+      stay_lat: city.stay_lat || null,
+      stay_lng: city.stay_lng || null,
+    })
+    .select()
+    .single();
+
+  if (error || !data) return null;
+
+  setData({ cities: [..._data.cities, data as City] });
+  return data as City;
 }
 
-export function updateCity(cityId: string, updates: Partial<City>): void {
-  const data = getData();
+export async function updateCity(cityId: string, updates: Partial<City>): Promise<void> {
+  // Optimistic update
   setData({
-    ...data,
-    cities: data.cities.map((c) =>
-      c.id === cityId ? { ...c, ...updates } : c
-    ),
+    cities: _data.cities.map((c) => (c.id === cityId ? { ...c, ...updates } : c)),
   });
+
+  await supabase.from("cities").update(updates).eq("id", cityId);
 }
 
-export function deleteCity(cityId: string): void {
-  const data = getData();
-  const placeIds = data.places.filter((p) => p.city_id === cityId).map((p) => p.id);
-  const dayPlanIds = data.dayPlans.filter((d) => d.city_id === cityId).map((d) => d.id);
+export async function deleteCity(cityId: string): Promise<void> {
+  // Optimistic update — cascade handled by DB
+  const placeIds = _data.places.filter((p) => p.city_id === cityId).map((p) => p.id);
+  const dayPlanIds = _data.dayPlans.filter((d) => d.city_id === cityId).map((d) => d.id);
   setData({
-    ...data,
-    cities: data.cities.filter((c) => c.id !== cityId),
-    places: data.places.filter((p) => p.city_id !== cityId),
-    sources: data.sources.filter((s) => !placeIds.includes(s.place_id)),
-    dayPlans: data.dayPlans.filter((d) => d.city_id !== cityId),
-    dayPlanStops: data.dayPlanStops.filter((s) => !dayPlanIds.includes(s.day_plan_id)),
+    cities: _data.cities.filter((c) => c.id !== cityId),
+    places: _data.places.filter((p) => p.city_id !== cityId),
+    sources: _data.sources.filter((s) => !placeIds.includes(s.place_id)),
+    dayPlans: _data.dayPlans.filter((d) => d.city_id !== cityId),
+    dayPlanStops: _data.dayPlanStops.filter((s) => !dayPlanIds.includes(s.day_plan_id)),
   });
+
+  await supabase.from("cities").delete().eq("id", cityId);
 }
 
 // --- Places ---
 
-export function getPlaces(cityId: string): Place[] {
-  return getData().places.filter((p) => p.city_id === cityId);
-}
-
-export function getPlace(placeId: string): Place | null {
-  return getData().places.find((p) => p.id === placeId) ?? null;
-}
-
-export function createPlace(
+export async function createPlace(
   cityId: string,
   memberId: string,
   place: Partial<Place> & { name: string; category: Place["category"]; priority: Place["priority"] }
-): Place {
-  const data = getData();
-  const newPlace: Place = {
-    id: generateId(),
-    city_id: cityId,
-    added_by: memberId,
-    name: place.name,
-    category: place.category,
-    priority: place.priority,
-    lat: place.lat ?? null,
-    lng: place.lng ?? null,
-    lat_gcj: place.lat_gcj ?? null,
-    lng_gcj: place.lng_gcj ?? null,
-    address: place.address ?? null,
-    payment: place.payment ?? [],
-    hours_note: place.hours_note ?? null,
-    reservation_required: place.reservation_required ?? false,
-    reservation_url: place.reservation_url ?? null,
-    notes: place.notes ?? null,
-    summary: place.summary ?? null,
-    created_at: new Date().toISOString(),
-  };
-  setData({ ...data, places: [...data.places, newPlace] });
+): Promise<Place | null> {
+  const { data, error } = await supabase
+    .from("places")
+    .insert({
+      city_id: cityId,
+      added_by: memberId,
+      name: place.name,
+      category: place.category,
+      priority: place.priority,
+      address: place.address || null,
+      payment: place.payment || [],
+      hours_note: place.hours_note || null,
+      reservation_required: place.reservation_required || false,
+      notes: place.notes || null,
+    })
+    .select()
+    .single();
+
+  if (error || !data) return null;
+
+  const newPlace = ensurePlaceDefaults(data as Place);
+  setData({ places: [..._data.places, newPlace] });
   return newPlace;
 }
 
-export function updatePlace(placeId: string, updates: Partial<Place>): void {
-  const data = getData();
+export async function updatePlace(placeId: string, updates: Partial<Place>): Promise<void> {
   setData({
-    ...data,
-    places: data.places.map((p) =>
-      p.id === placeId ? { ...p, ...updates } : p
-    ),
+    places: _data.places.map((p) => (p.id === placeId ? { ...p, ...updates } : p)),
   });
+
+  await supabase.from("places").update(updates).eq("id", placeId);
 }
 
-export function deletePlace(placeId: string): void {
-  const data = getData();
+export async function deletePlace(placeId: string): Promise<void> {
   setData({
-    ...data,
-    places: data.places.filter((p) => p.id !== placeId),
-    sources: data.sources.filter((s) => s.place_id !== placeId),
-    dayPlanStops: data.dayPlanStops.filter((s) => s.place_id !== placeId),
+    places: _data.places.filter((p) => p.id !== placeId),
+    sources: _data.sources.filter((s) => s.place_id !== placeId),
+    dayPlanStops: _data.dayPlanStops.filter((s) => s.place_id !== placeId),
   });
+
+  await supabase.from("places").delete().eq("id", placeId);
 }
 
 // --- Sources ---
 
-export function getSources(placeId: string): Source[] {
-  return getData()
-    .sources.filter((s) => s.place_id === placeId)
-    .sort((a, b) => new Date(b.added_at).getTime() - new Date(a.added_at).getTime());
-}
-
-export function getSourceCount(placeId: string): number {
-  return getData().sources.filter((s) => s.place_id === placeId).length;
-}
-
-export function createSource(
+export async function createSource(
   placeId: string,
   memberId: string,
   source: Partial<Source> & { platform: Source["platform"]; url: string; rating_vibe: Source["rating_vibe"] }
-): Source {
-  const data = getData();
-  const newSource: Source = {
-    id: generateId(),
-    place_id: placeId,
-    added_by: memberId,
-    platform: source.platform,
-    url: source.url,
-    author: source.author ?? null,
-    caption: source.caption ?? null,
-    key_takeaway: source.key_takeaway ?? null,
-    rating_vibe: source.rating_vibe,
-    screenshot_url: source.screenshot_url ?? null,
-    added_at: new Date().toISOString(),
-  };
-  setData({ ...data, sources: [...data.sources, newSource] });
+): Promise<Source | null> {
+  const { data, error } = await supabase
+    .from("sources")
+    .insert({
+      place_id: placeId,
+      added_by: memberId,
+      platform: source.platform,
+      url: source.url,
+      author: source.author || null,
+      caption: source.caption || null,
+      key_takeaway: source.key_takeaway || null,
+      rating_vibe: source.rating_vibe,
+    })
+    .select()
+    .single();
+
+  if (error || !data) return null;
+
+  const newSource = data as Source;
+  setData({ sources: [..._data.sources, newSource] });
   return newSource;
 }
 
-export function deleteSource(sourceId: string): void {
-  const data = getData();
+export async function deleteSource(sourceId: string): Promise<void> {
   setData({
-    ...data,
-    sources: data.sources.filter((s) => s.id !== sourceId),
+    sources: _data.sources.filter((s) => s.id !== sourceId),
   });
+
+  await supabase.from("sources").delete().eq("id", sourceId);
 }
 
 // --- Day Plans ---
 
-export function getDayPlans(cityId: string): DayPlan[] {
-  return getData()
-    .dayPlans.filter((d) => d.city_id === cityId)
-    .sort((a, b) => a.sort_order - b.sort_order);
-}
+export async function createDayPlan(cityId: string, label: string): Promise<DayPlan | null> {
+  const sort_order = _data.dayPlans.filter((d) => d.city_id === cityId).length;
 
-export function createDayPlan(cityId: string, label: string): DayPlan {
-  const data = getData();
-  const existing = data.dayPlans.filter((d) => d.city_id === cityId);
-  const newPlan: DayPlan = {
-    id: generateId(),
-    city_id: cityId,
-    date: null,
-    label,
-    sort_order: existing.length,
-  };
-  setData({ ...data, dayPlans: [...data.dayPlans, newPlan] });
+  const { data, error } = await supabase
+    .from("day_plans")
+    .insert({ city_id: cityId, label, sort_order })
+    .select()
+    .single();
+
+  if (error || !data) return null;
+
+  const newPlan = data as DayPlan;
+  setData({ dayPlans: [..._data.dayPlans, newPlan] });
   return newPlan;
 }
 
-export function updateDayPlan(planId: string, updates: Partial<DayPlan>): void {
-  const data = getData();
+export async function updateDayPlan(planId: string, updates: Partial<DayPlan>): Promise<void> {
   setData({
-    ...data,
-    dayPlans: data.dayPlans.map((d) =>
-      d.id === planId ? { ...d, ...updates } : d
-    ),
+    dayPlans: _data.dayPlans.map((d) => (d.id === planId ? { ...d, ...updates } : d)),
   });
+
+  await supabase.from("day_plans").update(updates).eq("id", planId);
 }
 
-export function deleteDayPlan(planId: string): void {
-  const data = getData();
+export async function deleteDayPlan(planId: string): Promise<void> {
   setData({
-    ...data,
-    dayPlans: data.dayPlans.filter((d) => d.id !== planId),
-    dayPlanStops: data.dayPlanStops.filter((s) => s.day_plan_id !== planId),
+    dayPlans: _data.dayPlans.filter((d) => d.id !== planId),
+    dayPlanStops: _data.dayPlanStops.filter((s) => s.day_plan_id !== planId),
   });
+
+  await supabase.from("day_plans").delete().eq("id", planId);
 }
 
 // --- Day Plan Stops ---
 
-export function getDayPlanStops(planId: string): DayPlanStop[] {
-  return getData()
-    .dayPlanStops.filter((s) => s.day_plan_id === planId)
-    .sort((a, b) => a.sort_order - b.sort_order);
-}
+export async function addStopToPlan(planId: string, placeId: string): Promise<DayPlanStop | null> {
+  const sort_order = _data.dayPlanStops.filter((s) => s.day_plan_id === planId).length;
 
-export function addStopToPlan(planId: string, placeId: string): DayPlanStop {
-  const data = getData();
-  const existing = data.dayPlanStops.filter((s) => s.day_plan_id === planId);
-  const stop: DayPlanStop = {
-    id: generateId(),
-    day_plan_id: planId,
-    place_id: placeId,
-    sort_order: existing.length,
-    arrival_time: null,
-    notes: null,
-  };
-  setData({ ...data, dayPlanStops: [...data.dayPlanStops, stop] });
+  const { data, error } = await supabase
+    .from("day_plan_stops")
+    .insert({ day_plan_id: planId, place_id: placeId, sort_order })
+    .select()
+    .single();
+
+  if (error || !data) return null;
+
+  const stop = data as DayPlanStop;
+  setData({ dayPlanStops: [..._data.dayPlanStops, stop] });
   return stop;
 }
 
-export function removeStopFromPlan(stopId: string): void {
-  const data = getData();
+export async function removeStopFromPlan(stopId: string): Promise<void> {
   setData({
-    ...data,
-    dayPlanStops: data.dayPlanStops.filter((s) => s.id !== stopId),
+    dayPlanStops: _data.dayPlanStops.filter((s) => s.id !== stopId),
   });
+
+  await supabase.from("day_plan_stops").delete().eq("id", stopId);
 }
 
-export function reorderStops(planId: string, orderedStopIds: string[]): void {
-  const data = getData();
+export async function reorderStops(planId: string, orderedStopIds: string[]): Promise<void> {
   setData({
-    ...data,
-    dayPlanStops: data.dayPlanStops.map((s) => {
+    dayPlanStops: _data.dayPlanStops.map((s) => {
       if (s.day_plan_id !== planId) return s;
       const idx = orderedStopIds.indexOf(s.id);
       return idx >= 0 ? { ...s, sort_order: idx } : s;
     }),
   });
+
+  // Update each stop's sort_order in DB
+  await Promise.all(
+    orderedStopIds.map((id, idx) =>
+      supabase.from("day_plan_stops").update({ sort_order: idx }).eq("id", id)
+    )
+  );
 }
 
-export function moveStopToPlan(stopId: string, newPlanId: string): void {
-  const data = getData();
-  const existing = data.dayPlanStops.filter((s) => s.day_plan_id === newPlanId);
+export async function moveStopToPlan(stopId: string, newPlanId: string): Promise<void> {
+  const sort_order = _data.dayPlanStops.filter((s) => s.day_plan_id === newPlanId).length;
+
   setData({
-    ...data,
-    dayPlanStops: data.dayPlanStops.map((s) =>
-      s.id === stopId
-        ? { ...s, day_plan_id: newPlanId, sort_order: existing.length }
-        : s
+    dayPlanStops: _data.dayPlanStops.map((s) =>
+      s.id === stopId ? { ...s, day_plan_id: newPlanId, sort_order } : s
     ),
   });
+
+  await supabase
+    .from("day_plan_stops")
+    .update({ day_plan_id: newPlanId, sort_order })
+    .eq("id", stopId);
 }

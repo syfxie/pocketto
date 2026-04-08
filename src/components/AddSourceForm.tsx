@@ -55,11 +55,11 @@ export default function AddSourceForm({
     }
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!url.trim()) return;
 
-    createSource(placeId, memberId, {
+    await createSource(placeId, memberId, {
       platform,
       url: url.trim(),
       author: author.trim() || null,
@@ -82,7 +82,7 @@ export default function AddSourceForm({
           value={url}
           onChange={(e) => handleUrlChange(e.target.value)}
           placeholder="Paste link from TikTok, RedNote, Instagram..."
-          className="w-full px-3 py-2 rounded-lg border border-stone-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+          className="w-full px-3 py-2 rounded-lg border border-stone-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
           autoFocus
         />
         {dupWarning && (
@@ -105,7 +105,7 @@ export default function AddSourceForm({
           <select
             value={platform}
             onChange={(e) => setPlatform(e.target.value as Platform)}
-            className="w-full px-3 py-2 rounded-lg border border-stone-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+            className="w-full px-3 py-2 rounded-lg border border-stone-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
           >
             {(Object.keys(PLATFORM_CONFIG) as Platform[]).map((p) => (
               <option key={p} value={p}>
@@ -121,7 +121,7 @@ export default function AddSourceForm({
             value={author}
             onChange={(e) => setAuthor(e.target.value)}
             placeholder="@username"
-            className="w-full px-3 py-2 rounded-lg border border-stone-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+            className="w-full px-3 py-2 rounded-lg border border-stone-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
           />
         </div>
       </div>
@@ -136,7 +136,7 @@ export default function AddSourceForm({
           value={keyTakeaway}
           onChange={(e) => setKeyTakeaway(e.target.value)}
           placeholder="What's the main tip? e.g. 'Order the mapo tofu, skip the fish'"
-          className="w-full px-3 py-2 rounded-lg border border-stone-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+          className="w-full px-3 py-2 rounded-lg border border-stone-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
         />
       </div>
 
@@ -151,7 +151,7 @@ export default function AddSourceForm({
               onClick={() => setRatingVibe(v)}
               className={`text-xs px-3 py-1.5 rounded-full border ${
                 ratingVibe === v
-                  ? "border-orange-400 bg-orange-50 text-orange-700"
+                  ? "border-green-400 bg-green-50 text-green-800"
                   : "border-stone-200 text-stone-600 hover:bg-stone-100"
               }`}
             >
@@ -171,7 +171,7 @@ export default function AddSourceForm({
           value={caption}
           onChange={(e) => setCaption(e.target.value)}
           placeholder="Original post caption"
-          className="w-full px-3 py-2 rounded-lg border border-stone-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+          className="w-full px-3 py-2 rounded-lg border border-stone-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
         />
       </div>
 
@@ -187,7 +187,7 @@ export default function AddSourceForm({
         <button
           type="submit"
           disabled={!url.trim()}
-          className="text-xs px-4 py-1.5 bg-orange-500 text-white rounded-lg font-medium hover:bg-orange-600 disabled:opacity-40"
+          className="text-xs px-4 py-1.5 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 disabled:opacity-40"
         >
           Add source
         </button>
