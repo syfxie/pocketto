@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# pocketto
+
+A minimalist trip planner for China. Collect restaurant and activity recommendations from social media, organize them by city, and build day-by-day itineraries.
+
+## Features
+
+- **Collect recommendations** — Save places from TikTok, RedNote, Instagram, YouTube with auto-detected platform and author
+- **Source tracking** — Link multiple sources to the same place, track key takeaways and vibes
+- **City-based planning** — Each city is its own trip with lodging, dates, and a place collection
+- **Day planner** — Drag-and-drop itinerary builder with day columns
+- **Collaborative** — Share an invite code with travel companions for full editing access
+- **China-optimized** — Bilingual names, GCJ-02 coordinate support, AMap export ready
+
+## Tech Stack
+
+- **Next.js** (App Router) + **TypeScript**
+- **Supabase** (Postgres) for data persistence
+- **Tailwind CSS** for styling
+- **dnd-kit** for drag-and-drop
+- **Mapbox GL JS** (planned) for maps
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+# Install dependencies
+npm install
+
+# Set up environment variables
+cp .env.local.example .env.local
+# Fill in your Supabase URL and anon key
+
+# Run the database schema
+# Paste supabase/schema.sql into the Supabase SQL Editor
+
+# Start dev server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3001](http://localhost:3001).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/
+  app/
+    page.tsx              # Landing — create/join group
+    home/page.tsx         # City list
+    city/[id]/page.tsx    # City view — places, filters, detail
+    city/[id]/planner/    # Day planner — drag-and-drop
+  components/             # UI components
+  lib/
+    store.ts              # Data layer (Supabase + optimistic state)
+    types.ts              # TypeScript types
+    constants.ts          # Category/platform/priority configs
+    url-parser.ts         # Social media URL auto-detection
+    supabase.ts           # Supabase client
+supabase/
+    schema.sql            # Database schema
+    seed.sql              # Sample data (Dali food spots)
+```
 
-## Learn More
+## License
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT
