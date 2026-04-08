@@ -27,18 +27,18 @@ export default function HomePage() {
   return (
     <div className="min-h-full">
       {/* Header */}
-      <header className="border-b border-stone-200 bg-white">
+      <header className="border-b border-neutral-200 bg-white">
         <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
           <div>
             <h1 className="text-lg font-semibold">{group.name}</h1>
-            <p className="text-xs text-stone-500">
+            <p className="text-xs text-neutral-500">
               Logged in as {member.nickname}
             </p>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setShowInvite(!showInvite)}
-              className="text-xs px-3 py-1.5 rounded-md border border-stone-200 text-stone-600 hover:bg-stone-50"
+              className="text-xs px-3 py-1.5 rounded-md border border-neutral-200 text-neutral-600 hover:bg-neutral-50"
             >
               Invite code
             </button>
@@ -47,7 +47,7 @@ export default function HomePage() {
                 clearSession();
                 router.push("/");
               }}
-              className="text-xs px-3 py-1.5 rounded-md text-stone-500 hover:bg-stone-50"
+              className="text-xs px-3 py-1.5 rounded-md text-neutral-500 hover:bg-neutral-50"
             >
               Leave
             </button>
@@ -55,14 +55,14 @@ export default function HomePage() {
         </div>
         {showInvite && (
           <div className="max-w-4xl mx-auto px-6 pb-4">
-            <div className="inline-flex items-center gap-3 bg-green-50 rounded-lg px-4 py-2.5">
-              <span className="text-xs text-green-800">Share this code:</span>
-              <span className="font-mono text-lg font-semibold tracking-[0.2em] text-green-700">
+            <div className="inline-flex items-center gap-3 bg-[#f2f7f4] rounded-md px-4 py-2.5">
+              <span className="text-xs text-[#1a3628]">Share this code:</span>
+              <span className="font-mono text-lg font-semibold tracking-[0.2em] text-[#234a33]">
                 {group.invite_code}
               </span>
               <button
                 onClick={() => navigator.clipboard.writeText(group.invite_code)}
-                className="text-xs text-green-700 hover:text-green-800 underline"
+                className="text-xs text-[#234a33] hover:text-[#1a3628] underline"
               >
                 Copy
               </button>
@@ -74,12 +74,12 @@ export default function HomePage() {
       {/* Content */}
       <main className="max-w-4xl mx-auto px-6 py-8">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-sm font-medium text-stone-500 uppercase tracking-wide">
+          <h2 className="text-sm font-medium text-neutral-500 uppercase tracking-wide">
             Cities
           </h2>
           <button
             onClick={() => setShowAddCity(true)}
-            className="text-sm px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700"
+            className="text-sm px-4 py-2 text-[#2d5a3f] border border-[#2d5a3f]/30 rounded-md font-medium hover:bg-[#2d5a3f]/5"
           >
             + Add city
           </button>
@@ -87,12 +87,12 @@ export default function HomePage() {
 
         {placeCounts.length === 0 ? (
           <div className="text-center py-20">
-            <p className="text-stone-400 text-sm mb-4">
+            <p className="text-neutral-400 text-sm mb-4">
               No cities yet. Start planning your trip!
             </p>
             <button
               onClick={() => setShowAddCity(true)}
-              className="text-sm text-green-600 hover:text-green-700 font-medium"
+              className="text-sm text-[#2d5a3f] hover:text-[#234a33] font-medium"
             >
               + Add your first city
             </button>
@@ -103,26 +103,26 @@ export default function HomePage() {
               <button
                 key={city.id}
                 onClick={() => router.push(`/city/${city.id}`)}
-                className="text-left bg-white rounded-xl border border-stone-200 p-5 hover:border-stone-300 hover:shadow-sm group"
+                className="text-left bg-white rounded-lg border border-neutral-200 p-5 hover:border-neutral-300 hover: group"
               >
                 <div className="flex items-start justify-between mb-2">
                   <div>
-                    <h3 className="font-semibold text-base group-hover:text-green-700">
+                    <h3 className="font-semibold text-base group-hover:text-[#234a33]">
                       {city.name}
                     </h3>
                   </div>
                 </div>
                 {(city.dates_start || city.dates_end) && (
-                  <p className="text-xs text-stone-400 mb-2">
+                  <p className="text-xs text-neutral-400 mb-2">
                     {city.dates_start} — {city.dates_end || "?"}
                   </p>
                 )}
                 {city.stay_name && (
-                  <p className="text-xs text-stone-500 mb-2 truncate">
+                  <p className="text-xs text-neutral-500 mb-2 truncate">
                     🏠 {city.stay_name}
                   </p>
                 )}
-                <p className="text-xs text-stone-400">
+                <p className="text-xs text-neutral-400">
                   {city.placeCount} {city.placeCount === 1 ? "place" : "places"} saved
                 </p>
               </button>

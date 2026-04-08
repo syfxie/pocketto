@@ -34,12 +34,12 @@ export default function SortableStop({ stop, place, index, onRemove }: Props) {
     <div
       ref={setNodeRef}
       style={style}
-      className="bg-white rounded-lg border border-stone-200 px-3 py-2 group hover:border-stone-300"
+      className="bg-white rounded-md border border-neutral-200 px-3 py-2 group hover:border-neutral-300"
     >
       <div className="flex items-center gap-2">
         {/* Drag handle */}
         <button
-          className="cursor-grab active:cursor-grabbing text-stone-300 hover:text-stone-500 touch-none"
+          className="cursor-grab active:cursor-grabbing text-neutral-300 hover:text-neutral-500 touch-none"
           {...attributes}
           {...listeners}
         >
@@ -54,7 +54,7 @@ export default function SortableStop({ stop, place, index, onRemove }: Props) {
         </button>
 
         {/* Number badge */}
-        <span className="text-[10px] font-bold text-white bg-green-600 w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0">
+        <span className="text-[10px] font-bold text-white bg-[#2d5a3f] w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0">
           {index + 1}
         </span>
 
@@ -65,7 +65,7 @@ export default function SortableStop({ stop, place, index, onRemove }: Props) {
             <p className="text-sm font-medium truncate">{place.name}</p>
           </div>
           {place.address && (
-            <p className="text-xs text-stone-400 truncate ml-6">
+            <p className="text-xs text-neutral-400 truncate ml-6">
               {place.address}
             </p>
           )}
@@ -74,7 +74,7 @@ export default function SortableStop({ stop, place, index, onRemove }: Props) {
         {/* Remove */}
         <button
           onClick={onRemove}
-          className="text-stone-300 hover:text-red-500 opacity-0 group-hover:opacity-100 flex-shrink-0 text-xs"
+          className="text-neutral-300 hover:text-red-500 opacity-0 group-hover:opacity-100 flex-shrink-0 text-xs"
         >
           &times;
         </button>
@@ -82,7 +82,7 @@ export default function SortableStop({ stop, place, index, onRemove }: Props) {
 
       {/* Notes */}
       {stop.notes && (
-        <p className="text-xs text-stone-500 mt-1 ml-[52px]">{stop.notes}</p>
+        <p className="text-xs text-neutral-500 mt-1 ml-[52px]">{stop.notes}</p>
       )}
     </div>
   );

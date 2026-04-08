@@ -53,24 +53,24 @@ export default function PlaceDetail({ placeId, memberId, onClose }: Props) {
   }
 
   return (
-    <div className="bg-white border border-t-0 border-stone-200 rounded-b-lg px-6 py-5 -mt-1">
+    <div className="bg-white border border-t-0 border-neutral-200 rounded-b-lg px-6 py-5 -mt-1">
       {/* Properties */}
       <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm mb-5">
         {place.address && (
           <div className="flex items-start gap-2">
-            <span className="text-stone-400 w-20 flex-shrink-0">Address</span>
+            <span className="text-neutral-400 w-20 flex-shrink-0">Address</span>
             <span>{place.address}</span>
           </div>
         )}
         {place.hours_note && (
           <div className="flex items-start gap-2">
-            <span className="text-stone-400 w-20 flex-shrink-0">Hours</span>
+            <span className="text-neutral-400 w-20 flex-shrink-0">Hours</span>
             <span>{place.hours_note}</span>
           </div>
         )}
         {place.payment.length > 0 && (
           <div className="flex items-start gap-2">
-            <span className="text-stone-400 w-20 flex-shrink-0">Payment</span>
+            <span className="text-neutral-400 w-20 flex-shrink-0">Payment</span>
             <span>
               {place.payment
                 .map((p) => PAYMENT_CONFIG[p as PaymentMethod]?.label || p)
@@ -80,7 +80,7 @@ export default function PlaceDetail({ placeId, memberId, onClose }: Props) {
         )}
         {place.reservation_required && (
           <div className="flex items-start gap-2">
-            <span className="text-stone-400 w-20 flex-shrink-0">Reserve</span>
+            <span className="text-neutral-400 w-20 flex-shrink-0">Reserve</span>
             <span>
               Required
               {place.reservation_url && (
@@ -90,7 +90,7 @@ export default function PlaceDetail({ placeId, memberId, onClose }: Props) {
                     href={place.reservation_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-green-600 hover:underline"
+                    className="text-[#2d5a3f] hover:underline"
                   >
                     Book here
                   </a>
@@ -104,7 +104,7 @@ export default function PlaceDetail({ placeId, memberId, onClose }: Props) {
       {/* Notes */}
       <div className="mb-5">
         <div className="flex items-center justify-between mb-1.5">
-          <h4 className="text-xs font-medium text-stone-500 uppercase tracking-wide">
+          <h4 className="text-xs font-medium text-neutral-500 uppercase tracking-wide">
             Notes
           </h4>
           {!editingNotes && (
@@ -113,7 +113,7 @@ export default function PlaceDetail({ placeId, memberId, onClose }: Props) {
                 setNotesDraft(place.notes || "");
                 setEditingNotes(true);
               }}
-              className="text-xs text-stone-400 hover:text-stone-600"
+              className="text-xs text-neutral-400 hover:text-neutral-600"
             >
               Edit
             </button>
@@ -125,28 +125,28 @@ export default function PlaceDetail({ placeId, memberId, onClose }: Props) {
               value={notesDraft}
               onChange={(e) => setNotesDraft(e.target.value)}
               placeholder="General notes about this place..."
-              className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-green-600 min-h-[80px] resize-y"
+              className="w-full px-3 py-2 rounded-md border border-neutral-200 text-sm focus:outline-none focus:border-[#2d5a3f]/50 min-h-[80px] resize-y"
               autoFocus
             />
             <div className="flex gap-2 mt-2">
               <button
                 onClick={() => setEditingNotes(false)}
-                className="text-xs text-stone-500 hover:text-stone-700"
+                className="text-xs text-neutral-500 hover:text-neutral-700"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSaveNotes}
-                className="text-xs text-green-600 hover:text-green-700 font-medium"
+                className="text-xs text-[#2d5a3f] hover:text-[#234a33] font-medium"
               >
                 Save
               </button>
             </div>
           </div>
         ) : (
-          <p className="text-sm text-stone-600">
+          <p className="text-sm text-neutral-600">
             {place.notes || (
-              <span className="text-stone-400 italic">
+              <span className="text-neutral-400 italic">
                 No notes yet. Click edit to add general notes.
               </span>
             )}
@@ -157,7 +157,7 @@ export default function PlaceDetail({ placeId, memberId, onClose }: Props) {
       {/* Summary */}
       <div className="mb-5">
         <div className="flex items-center justify-between mb-1.5">
-          <h4 className="text-xs font-medium text-stone-500 uppercase tracking-wide">
+          <h4 className="text-xs font-medium text-neutral-500 uppercase tracking-wide">
             Summary
           </h4>
           {!editingSummary && (
@@ -166,7 +166,7 @@ export default function PlaceDetail({ placeId, memberId, onClose }: Props) {
                 setSummaryDraft(place.summary || "");
                 setEditingSummary(true);
               }}
-              className="text-xs text-stone-400 hover:text-stone-600"
+              className="text-xs text-neutral-400 hover:text-neutral-600"
             >
               Edit
             </button>
@@ -178,28 +178,28 @@ export default function PlaceDetail({ placeId, memberId, onClose }: Props) {
               value={summaryDraft}
               onChange={(e) => setSummaryDraft(e.target.value)}
               placeholder="Add your notes — what to order, when to go, tips..."
-              className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-green-600 min-h-[80px] resize-y"
+              className="w-full px-3 py-2 rounded-md border border-neutral-200 text-sm focus:outline-none focus:border-[#2d5a3f]/50 min-h-[80px] resize-y"
               autoFocus
             />
             <div className="flex gap-2 mt-2">
               <button
                 onClick={() => setEditingSummary(false)}
-                className="text-xs text-stone-500 hover:text-stone-700"
+                className="text-xs text-neutral-500 hover:text-neutral-700"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSaveSummary}
-                className="text-xs text-green-600 hover:text-green-700 font-medium"
+                className="text-xs text-[#2d5a3f] hover:text-[#234a33] font-medium"
               >
                 Save
               </button>
             </div>
           </div>
         ) : (
-          <p className="text-sm text-stone-600">
+          <p className="text-sm text-neutral-600">
             {place.summary || (
-              <span className="text-stone-400 italic">
+              <span className="text-neutral-400 italic">
                 No notes yet. Click edit to add tips and recommendations.
               </span>
             )}
@@ -210,12 +210,12 @@ export default function PlaceDetail({ placeId, memberId, onClose }: Props) {
       {/* Sources */}
       <div className="mb-4">
         <div className="flex items-center justify-between mb-3">
-          <h4 className="text-xs font-medium text-stone-500 uppercase tracking-wide">
+          <h4 className="text-xs font-medium text-neutral-500 uppercase tracking-wide">
             Sources ({sources.length})
           </h4>
           <button
             onClick={() => setShowAddSource(!showAddSource)}
-            className="text-xs text-green-600 hover:text-green-700 font-medium"
+            className="text-xs text-[#2d5a3f] hover:text-[#234a33] font-medium"
           >
             {showAddSource ? "Cancel" : "+ Add source"}
           </button>
@@ -233,7 +233,7 @@ export default function PlaceDetail({ placeId, memberId, onClose }: Props) {
         )}
 
         {sources.length === 0 && !showAddSource ? (
-          <p className="text-xs text-stone-400 italic">
+          <p className="text-xs text-neutral-400 italic">
             No sources yet. Add a link from TikTok, RedNote, Instagram...
           </p>
         ) : (
@@ -244,7 +244,7 @@ export default function PlaceDetail({ placeId, memberId, onClose }: Props) {
               return (
                 <div
                   key={source.id}
-                  className="flex items-start gap-3 p-3 rounded-lg bg-stone-50 border border-stone-100"
+                  className="flex items-start gap-3 p-3 rounded-md bg-neutral-50 border border-neutral-100"
                 >
                   <span
                     className={`text-xs px-2 py-0.5 rounded-full flex-shrink-0 ${plat.color}`}
@@ -253,17 +253,17 @@ export default function PlaceDetail({ placeId, memberId, onClose }: Props) {
                   </span>
                   <div className="min-w-0 flex-1">
                     {source.author && (
-                      <span className="text-xs text-stone-500">
+                      <span className="text-xs text-neutral-500">
                         {source.author}
                       </span>
                     )}
                     {source.key_takeaway && (
-                      <p className="text-sm text-stone-700 mt-0.5">
+                      <p className="text-sm text-neutral-700 mt-0.5">
                         &ldquo;{source.key_takeaway}&rdquo;
                       </p>
                     )}
                     {source.caption && (
-                      <p className="text-xs text-stone-400 mt-0.5 truncate">
+                      <p className="text-xs text-neutral-400 mt-0.5 truncate">
                         {source.caption}
                       </p>
                     )}
@@ -274,7 +274,7 @@ export default function PlaceDetail({ placeId, memberId, onClose }: Props) {
                       href={source.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-xs text-stone-400 hover:text-green-600"
+                      className="text-xs text-neutral-400 hover:text-[#2d5a3f]"
                     >
                       Open ↗
                     </a>
@@ -287,10 +287,10 @@ export default function PlaceDetail({ placeId, memberId, onClose }: Props) {
       </div>
 
       {/* Actions */}
-      <div className="flex items-center justify-between pt-3 border-t border-stone-100">
+      <div className="flex items-center justify-between pt-3 border-t border-neutral-100">
         <button
           onClick={onClose}
-          className="text-xs text-stone-400 hover:text-stone-600"
+          className="text-xs text-neutral-400 hover:text-neutral-600"
         >
           Collapse
         </button>
@@ -305,7 +305,7 @@ export default function PlaceDetail({ placeId, memberId, onClose }: Props) {
             </button>
             <button
               onClick={() => setConfirmDelete(false)}
-              className="text-xs text-stone-500 hover:text-stone-700"
+              className="text-xs text-neutral-500 hover:text-neutral-700"
             >
               Cancel
             </button>
@@ -313,7 +313,7 @@ export default function PlaceDetail({ placeId, memberId, onClose }: Props) {
         ) : (
           <button
             onClick={() => setConfirmDelete(true)}
-            className="text-xs text-stone-400 hover:text-red-500"
+            className="text-xs text-neutral-400 hover:text-red-500"
           >
             Delete
           </button>

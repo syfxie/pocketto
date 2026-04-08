@@ -64,12 +64,12 @@ export default function AddPlaceModal({ cityId, memberId, onClose }: Props) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="absolute inset-0 bg-black/30" onClick={onClose} />
-      <div className="relative bg-white rounded-xl shadow-xl w-full max-w-lg mx-4 p-6 max-h-[90vh] overflow-y-auto">
+      <div className="relative bg-white rounded-lg shadow-md w-full max-w-lg mx-4 p-6 max-h-[90vh] overflow-y-auto">
         <h2 className="text-lg font-semibold mb-4">Add a place</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Name */}
           <div>
-            <label className="block text-xs font-medium text-stone-500 mb-1">
+            <label className="block text-xs font-medium text-neutral-500 mb-1">
               Name
             </label>
             <input
@@ -77,18 +77,18 @@ export default function AddPlaceModal({ cityId, memberId, onClose }: Props) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. 外婆家 Grandma's Home"
-              className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
+              className="w-full px-3 py-2 rounded-md border border-neutral-200 text-sm focus:outline-none focus:border-[#2d5a3f]/50"
               autoFocus
             />
           </div>
 
           {/* Category */}
           <div>
-            <label className="block text-xs font-medium text-stone-500 mb-2">
+            <label className="block text-xs font-medium text-neutral-500 mb-2">
               Category
             </label>
             <div className="mb-1.5">
-              <span className="text-xs text-stone-400">Food & Drink</span>
+              <span className="text-xs text-neutral-400">Food & Drink</span>
             </div>
             <div className="flex flex-wrap gap-1.5 mb-3">
               {FOOD_CATEGORIES.map((cat) => (
@@ -98,8 +98,8 @@ export default function AddPlaceModal({ cityId, memberId, onClose }: Props) {
                   onClick={() => setCategory(cat)}
                   className={`text-xs px-2.5 py-1 rounded-full border ${
                     category === cat
-                      ? "border-green-400 bg-green-50 text-green-800"
-                      : "border-stone-200 text-stone-600 hover:bg-stone-100"
+                      ? "border-[#2d5a3f]/40 bg-[#f2f7f4] text-[#1a3628]"
+                      : "border-neutral-200 text-neutral-600 hover:bg-neutral-100"
                   }`}
                 >
                   {CATEGORY_CONFIG[cat].emoji} {CATEGORY_CONFIG[cat].label}
@@ -107,7 +107,7 @@ export default function AddPlaceModal({ cityId, memberId, onClose }: Props) {
               ))}
             </div>
             <div className="mb-1.5">
-              <span className="text-xs text-stone-400">Activities & Shopping</span>
+              <span className="text-xs text-neutral-400">Activities & Shopping</span>
             </div>
             <div className="flex flex-wrap gap-1.5">
               {ACTIVITY_CATEGORIES.map((cat) => (
@@ -117,8 +117,8 @@ export default function AddPlaceModal({ cityId, memberId, onClose }: Props) {
                   onClick={() => setCategory(cat)}
                   className={`text-xs px-2.5 py-1 rounded-full border ${
                     category === cat
-                      ? "border-green-400 bg-green-50 text-green-800"
-                      : "border-stone-200 text-stone-600 hover:bg-stone-100"
+                      ? "border-[#2d5a3f]/40 bg-[#f2f7f4] text-[#1a3628]"
+                      : "border-neutral-200 text-neutral-600 hover:bg-neutral-100"
                   }`}
                 >
                   {CATEGORY_CONFIG[cat].emoji} {CATEGORY_CONFIG[cat].label}
@@ -129,7 +129,7 @@ export default function AddPlaceModal({ cityId, memberId, onClose }: Props) {
 
           {/* Priority */}
           <div>
-            <label className="block text-xs font-medium text-stone-500 mb-2">
+            <label className="block text-xs font-medium text-neutral-500 mb-2">
               Priority
             </label>
             <div className="flex gap-2">
@@ -140,8 +140,8 @@ export default function AddPlaceModal({ cityId, memberId, onClose }: Props) {
                   onClick={() => setPriority(p)}
                   className={`text-xs px-3 py-1.5 rounded-full border ${
                     priority === p
-                      ? "border-green-400 bg-green-50 text-green-800"
-                      : `border-stone-200 ${PRIORITY_CONFIG[p].color} hover:opacity-80`
+                      ? "border-[#2d5a3f]/40 bg-[#f2f7f4] text-[#1a3628]"
+                      : `border-neutral-200 ${PRIORITY_CONFIG[p].color} hover:opacity-80`
                   }`}
                 >
                   {PRIORITY_CONFIG[p].label}
@@ -152,7 +152,7 @@ export default function AddPlaceModal({ cityId, memberId, onClose }: Props) {
 
           {/* Address + Hours */}
           <div>
-            <label className="block text-xs font-medium text-stone-500 mb-1">
+            <label className="block text-xs font-medium text-neutral-500 mb-1">
               Address
             </label>
             <input
@@ -160,11 +160,11 @@ export default function AddPlaceModal({ cityId, memberId, onClose }: Props) {
               value={address}
               onChange={(e) => setAddress(e.target.value)}
               placeholder="123 Nanjing Road"
-              className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
+              className="w-full px-3 py-2 rounded-md border border-neutral-200 text-sm focus:outline-none focus:border-[#2d5a3f]/50"
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-stone-500 mb-1">
+            <label className="block text-xs font-medium text-neutral-500 mb-1">
               Hours note (optional)
             </label>
             <input
@@ -172,13 +172,13 @@ export default function AddPlaceModal({ cityId, memberId, onClose }: Props) {
               value={hoursNote}
               onChange={(e) => setHoursNote(e.target.value)}
               placeholder="e.g. Closed 2-5pm, weekdays only"
-              className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
+              className="w-full px-3 py-2 rounded-md border border-neutral-200 text-sm focus:outline-none focus:border-[#2d5a3f]/50"
             />
           </div>
 
           {/* First source (optional) */}
-          <div className="border-t border-stone-100 pt-4">
-            <p className="text-xs font-medium text-stone-500 mb-3">
+          <div className="border-t border-neutral-100 pt-4">
+            <p className="text-xs font-medium text-neutral-500 mb-3">
               Source (optional — add the link that led you here)
             </p>
             <div className="space-y-3">
@@ -187,7 +187,7 @@ export default function AddPlaceModal({ cityId, memberId, onClose }: Props) {
                 value={sourceUrl}
                 onChange={(e) => setSourceUrl(e.target.value)}
                 placeholder="Paste link from TikTok, RedNote, Instagram..."
-                className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
+                className="w-full px-3 py-2 rounded-md border border-neutral-200 text-sm focus:outline-none focus:border-[#2d5a3f]/50"
               />
               {sourceUrl && (
                 <input
@@ -195,7 +195,7 @@ export default function AddPlaceModal({ cityId, memberId, onClose }: Props) {
                   value={sourceTakeaway}
                   onChange={(e) => setSourceTakeaway(e.target.value)}
                   placeholder="Key takeaway from this post"
-                  className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
+                  className="w-full px-3 py-2 rounded-md border border-neutral-200 text-sm focus:outline-none focus:border-[#2d5a3f]/50"
                 />
               )}
             </div>
@@ -206,14 +206,14 @@ export default function AddPlaceModal({ cityId, memberId, onClose }: Props) {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 py-2.5 px-4 text-stone-600 rounded-lg font-medium border border-stone-200 hover:bg-stone-50 text-sm"
+              className="flex-1 py-2.5 px-4 text-neutral-600 rounded-md font-medium border border-neutral-200 hover:bg-neutral-50 text-sm"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={!name.trim()}
-              className="flex-1 py-2.5 px-4 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 disabled:opacity-40 text-sm"
+              className="flex-1 py-2.5 px-4 text-[#2d5a3f] border border-[#2d5a3f]/30 rounded-md font-medium hover:bg-[#2d5a3f]/5 disabled:opacity-40 text-sm"
             >
               Add place
             </button>

@@ -18,7 +18,7 @@ export default function StoreProvider({
   if (!store.loaded) {
     return (
       <div className="flex-1 flex items-center justify-center">
-        <p className="text-stone-400 text-sm">Loading...</p>
+        <p className="text-neutral-400 text-sm">Loading...</p>
       </div>
     );
   }

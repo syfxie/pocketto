@@ -167,12 +167,12 @@ export default function PlannerPage() {
   return (
     <div className="min-h-full flex flex-col">
       {/* Header */}
-      <header className="border-b border-stone-200 bg-white sticky top-0 z-10">
+      <header className="border-b border-neutral-200 bg-white sticky top-0 z-10">
         <div className="max-w-full mx-auto px-6 py-4">
           <div className="flex items-center gap-3 mb-1">
             <button
               onClick={() => router.push(`/city/${cityId}`)}
-              className="text-stone-400 hover:text-stone-600 text-sm"
+              className="text-neutral-400 hover:text-neutral-600 text-sm"
             >
               &larr; {city.name}
             </button>
@@ -180,13 +180,13 @@ export default function PlannerPage() {
           <div className="flex items-center justify-between">
             <h1 className="text-xl font-semibold">
               Day Planner{" "}
-              <span className="text-stone-400 font-normal">
+              <span className="text-neutral-400 font-normal">
                 — {city.name}
               </span>
             </h1>
             <button
               onClick={handleAddDay}
-              className="text-sm px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700"
+              className="text-sm px-4 py-2 text-[#2d5a3f] border border-[#2d5a3f]/30 rounded-md font-medium hover:bg-[#2d5a3f]/5"
             >
               + Add day
             </button>
@@ -206,8 +206,8 @@ export default function PlannerPage() {
           <div className="flex gap-4 p-6 min-h-[calc(100vh-120px)]">
             {/* Unplanned pool */}
             <div className="w-72 flex-shrink-0">
-              <div className="bg-stone-50 rounded-xl border border-stone-200 p-4 h-full">
-                <h3 className="text-sm font-medium text-stone-500 mb-3">
+              <div className="bg-neutral-50 rounded-lg border border-neutral-200 p-4 h-full">
+                <h3 className="text-sm font-medium text-neutral-500 mb-3">
                   Unplanned ({unplannedPlaces.length})
                 </h3>
                 <div className="space-y-2">
@@ -220,7 +220,7 @@ export default function PlannerPage() {
                     />
                   ))}
                   {unplannedPlaces.length === 0 && (
-                    <p className="text-xs text-stone-400 text-center py-8">
+                    <p className="text-xs text-neutral-400 text-center py-8">
                       All places assigned!
                     </p>
                   )}
@@ -246,13 +246,13 @@ export default function PlannerPage() {
             {dayPlans.length === 0 && (
               <div className="flex-1 flex items-center justify-center">
                 <div className="text-center">
-                  <p className="text-stone-400 text-sm mb-4">
+                  <p className="text-neutral-400 text-sm mb-4">
                     No days planned yet. Add a day to start building your
                     itinerary.
                   </p>
                   <button
                     onClick={handleAddDay}
-                    className="text-sm text-green-600 hover:text-green-700 font-medium"
+                    className="text-sm text-[#2d5a3f] hover:text-[#234a33] font-medium"
                   >
                     + Add your first day
                   </button>
@@ -263,7 +263,7 @@ export default function PlannerPage() {
 
           <DragOverlay>
             {activeDragPlace && (
-              <div className="bg-white rounded-lg border border-green-300 shadow-lg px-3 py-2 w-64 opacity-90">
+              <div className="bg-white rounded-md border border-[#2d5a3f]/30 shadow-sm px-3 py-2 w-64 opacity-90">
                 <div className="flex items-center gap-2">
                   <span className="text-sm">
                     {CATEGORY_CONFIG[activeDragPlace.category].emoji}

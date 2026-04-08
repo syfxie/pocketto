@@ -22,10 +22,10 @@ export default function PlaceCard({
   return (
     <button
       onClick={onClick}
-      className={`w-full text-left px-4 py-3 rounded-lg border transition-all ${
+      className={`w-full text-left px-4 py-3 rounded-md border transition-all ${
         isSelected
-          ? "border-green-300 bg-green-50/50 shadow-sm"
-          : "border-stone-200 bg-white hover:border-stone-300 hover:shadow-sm"
+          ? "border-[#2d5a3f]/30 bg-[#f2f7f4]/50 "
+          : "border-neutral-200 bg-white hover:border-neutral-300 hover:"
       }`}
     >
       <div className="flex items-center justify-between">
@@ -41,11 +41,11 @@ export default function PlaceCard({
               <span className={`text-xs px-1.5 py-0.5 rounded ${pri.color}`}>
                 {pri.label}
               </span>
-              <span className="text-xs text-stone-400">
+              <span className="text-xs text-neutral-400">
                 {cat.label}
               </span>
               {place.address && (
-                <span className="text-xs text-stone-400 truncate max-w-[200px]">
+                <span className="text-xs text-neutral-400 truncate max-w-[200px]">
                   · {place.address}
                 </span>
               )}
@@ -54,11 +54,11 @@ export default function PlaceCard({
         </div>
         <div className="flex items-center gap-3 flex-shrink-0 ml-3">
           {sourceCount > 0 && (
-            <span className="text-xs text-stone-500 bg-stone-100 px-2 py-0.5 rounded-full">
+            <span className="text-xs text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded-full">
               {sourceCount} {sourceCount === 1 ? "source" : "sources"}
             </span>
           )}
-          <span className="text-stone-400 text-xs">{isSelected ? "▲" : "▼"}</span>
+          <span className="text-neutral-400 text-xs">{isSelected ? "▲" : "▼"}</span>
         </div>
       </div>
     </button>

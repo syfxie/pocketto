@@ -31,11 +31,11 @@ export default function AddCityModal({ groupId, onClose }: Props) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="absolute inset-0 bg-black/30" onClick={onClose} />
-      <div className="relative bg-white rounded-xl shadow-xl w-full max-w-md mx-4 p-6">
+      <div className="relative bg-white rounded-lg shadow-md w-full max-w-md mx-4 p-6">
         <h2 className="text-lg font-semibold mb-4">Add a city</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-medium text-stone-500 mb-1">
+            <label className="block text-xs font-medium text-neutral-500 mb-1">
               City name
             </label>
             <input
@@ -43,38 +43,38 @@ export default function AddCityModal({ groupId, onClose }: Props) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Shanghai 上海"
-              className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
+              className="w-full px-3 py-2 rounded-md border border-neutral-200 text-sm focus:outline-none focus:border-[#2d5a3f]/50"
               autoFocus
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-medium text-stone-500 mb-1">
+              <label className="block text-xs font-medium text-neutral-500 mb-1">
                 Arrive
               </label>
               <input
                 type="date"
                 value={datesStart}
                 onChange={(e) => setDatesStart(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
+                className="w-full px-3 py-2 rounded-md border border-neutral-200 text-sm focus:outline-none focus:border-[#2d5a3f]/50"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-stone-500 mb-1">
+              <label className="block text-xs font-medium text-neutral-500 mb-1">
                 Depart
               </label>
               <input
                 type="date"
                 value={datesEnd}
                 onChange={(e) => setDatesEnd(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
+                className="w-full px-3 py-2 rounded-md border border-neutral-200 text-sm focus:outline-none focus:border-[#2d5a3f]/50"
               />
             </div>
           </div>
 
-          <div className="border-t border-stone-100 pt-4">
-            <p className="text-xs font-medium text-stone-500 mb-3">
+          <div className="border-t border-neutral-100 pt-4">
+            <p className="text-xs font-medium text-neutral-500 mb-3">
               Lodging (optional)
             </p>
             <div className="space-y-3">
@@ -83,14 +83,14 @@ export default function AddCityModal({ groupId, onClose }: Props) {
                 value={stayName}
                 onChange={(e) => setStayName(e.target.value)}
                 placeholder="Hotel / Airbnb name"
-                className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
+                className="w-full px-3 py-2 rounded-md border border-neutral-200 text-sm focus:outline-none focus:border-[#2d5a3f]/50"
               />
               <input
                 type="text"
                 value={stayAddress}
                 onChange={(e) => setStayAddress(e.target.value)}
                 placeholder="Address"
-                className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
+                className="w-full px-3 py-2 rounded-md border border-neutral-200 text-sm focus:outline-none focus:border-[#2d5a3f]/50"
               />
             </div>
           </div>
@@ -99,14 +99,14 @@ export default function AddCityModal({ groupId, onClose }: Props) {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 py-2.5 px-4 text-stone-600 rounded-lg font-medium border border-stone-200 hover:bg-stone-50 text-sm"
+              className="flex-1 py-2.5 px-4 text-neutral-600 rounded-md font-medium border border-neutral-200 hover:bg-neutral-50 text-sm"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={!name.trim()}
-              className="flex-1 py-2.5 px-4 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 disabled:opacity-40 text-sm"
+              className="flex-1 py-2.5 px-4 text-[#2d5a3f] border border-[#2d5a3f]/30 rounded-md font-medium hover:bg-[#2d5a3f]/5 disabled:opacity-40 text-sm"
             >
               Add city
             </button>

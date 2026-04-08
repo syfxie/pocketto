@@ -50,10 +50,10 @@ export default function DayColumn({
     <div className="w-72 flex-shrink-0">
       <div
         ref={setNodeRef}
-        className={`rounded-xl border p-4 h-full transition-colors ${
+        className={`rounded-lg border p-4 h-full transition-colors ${
           isOver
-            ? "border-green-300 bg-green-50/50"
-            : "border-stone-200 bg-white"
+            ? "border-[#2d5a3f]/30 bg-[#f2f7f4]/50"
+            : "border-neutral-200 bg-white"
         }`}
       >
         {/* Day header */}
@@ -66,7 +66,7 @@ export default function DayColumn({
                 onChange={(e) => setLabelDraft(e.target.value)}
                 onBlur={handleSaveLabel}
                 onKeyDown={(e) => e.key === "Enter" && handleSaveLabel()}
-                className="text-sm font-medium w-full px-1 py-0.5 rounded border border-green-300 focus:outline-none"
+                className="text-sm font-medium w-full px-1 py-0.5 rounded border border-[#2d5a3f]/30 focus:outline-none"
                 autoFocus
               />
             ) : (
@@ -75,16 +75,16 @@ export default function DayColumn({
                   setLabelDraft(plan.label);
                   setEditingLabel(true);
                 }}
-                className="text-sm font-medium text-stone-700 hover:text-green-700 text-left"
+                className="text-sm font-medium text-neutral-700 hover:text-[#234a33] text-left"
               >
                 {plan.label}
               </button>
             )}
             {plan.date && (
-              <p className="text-xs text-stone-400 mt-0.5">{plan.date}</p>
+              <p className="text-xs text-neutral-400 mt-0.5">{plan.date}</p>
             )}
           </div>
-          <span className="text-xs text-stone-400 bg-stone-100 px-2 py-0.5 rounded-full ml-2">
+          <span className="text-xs text-neutral-400 bg-neutral-100 px-2 py-0.5 rounded-full ml-2">
             {stops.length}
           </span>
         </div>
@@ -109,7 +109,7 @@ export default function DayColumn({
               );
             })}
             {stops.length === 0 && (
-              <div className="text-center py-8 text-xs text-stone-400 border-2 border-dashed border-stone-200 rounded-lg">
+              <div className="text-center py-8 text-xs text-neutral-400 border-2 border-dashed border-neutral-200 rounded-md">
                 Drag places here
               </div>
             )}
@@ -117,8 +117,8 @@ export default function DayColumn({
         </SortableContext>
 
         {/* Day footer */}
-        <div className="mt-3 pt-3 border-t border-stone-100 flex justify-between items-center">
-          <span className="text-xs text-stone-400">
+        <div className="mt-3 pt-3 border-t border-neutral-100 flex justify-between items-center">
+          <span className="text-xs text-neutral-400">
             {stops.length} {stops.length === 1 ? "stop" : "stops"}
           </span>
           {confirmDelete ? (
@@ -131,7 +131,7 @@ export default function DayColumn({
               </button>
               <button
                 onClick={() => setConfirmDelete(false)}
-                className="text-xs text-stone-500"
+                className="text-xs text-neutral-500"
               >
                 Cancel
               </button>
@@ -139,7 +139,7 @@ export default function DayColumn({
           ) : (
             <button
               onClick={() => setConfirmDelete(true)}
-              className="text-xs text-stone-400 hover:text-red-500"
+              className="text-xs text-neutral-400 hover:text-red-500"
             >
               Remove day
             </button>

@@ -73,7 +73,7 @@ export default function AddSourceForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-stone-50 border border-stone-200 rounded-lg p-4 space-y-3"
+      className="bg-neutral-50 border border-neutral-200 rounded-md p-4 space-y-3"
     >
       {/* URL input */}
       <div>
@@ -82,7 +82,7 @@ export default function AddSourceForm({
           value={url}
           onChange={(e) => handleUrlChange(e.target.value)}
           placeholder="Paste link from TikTok, RedNote, Instagram..."
-          className="w-full px-3 py-2 rounded-lg border border-stone-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
+          className="w-full px-3 py-2 rounded-md border border-neutral-200 bg-white text-sm focus:outline-none focus:border-[#2d5a3f]/50"
           autoFocus
         />
         {dupWarning && (
@@ -91,7 +91,7 @@ export default function AddSourceForm({
           </p>
         )}
         {autoDetected && (
-          <p className="text-green-600 text-xs mt-1">
+          <p className="text-[#2d5a3f] text-xs mt-1">
             Auto-detected: {PLATFORM_CONFIG[platform].label}
             {author && ` by ${author}`}
           </p>
@@ -101,11 +101,11 @@ export default function AddSourceForm({
       {/* Platform + Author row */}
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="block text-xs text-stone-500 mb-1">Platform</label>
+          <label className="block text-xs text-neutral-500 mb-1">Platform</label>
           <select
             value={platform}
             onChange={(e) => setPlatform(e.target.value as Platform)}
-            className="w-full px-3 py-2 rounded-lg border border-stone-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
+            className="w-full px-3 py-2 rounded-md border border-neutral-200 bg-white text-sm focus:outline-none focus:border-[#2d5a3f]/50"
           >
             {(Object.keys(PLATFORM_CONFIG) as Platform[]).map((p) => (
               <option key={p} value={p}>
@@ -115,20 +115,20 @@ export default function AddSourceForm({
           </select>
         </div>
         <div>
-          <label className="block text-xs text-stone-500 mb-1">Author</label>
+          <label className="block text-xs text-neutral-500 mb-1">Author</label>
           <input
             type="text"
             value={author}
             onChange={(e) => setAuthor(e.target.value)}
             placeholder="@username"
-            className="w-full px-3 py-2 rounded-lg border border-stone-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
+            className="w-full px-3 py-2 rounded-md border border-neutral-200 bg-white text-sm focus:outline-none focus:border-[#2d5a3f]/50"
           />
         </div>
       </div>
 
       {/* Key takeaway */}
       <div>
-        <label className="block text-xs text-stone-500 mb-1">
+        <label className="block text-xs text-neutral-500 mb-1">
           Key takeaway
         </label>
         <input
@@ -136,13 +136,13 @@ export default function AddSourceForm({
           value={keyTakeaway}
           onChange={(e) => setKeyTakeaway(e.target.value)}
           placeholder="What's the main tip? e.g. 'Order the mapo tofu, skip the fish'"
-          className="w-full px-3 py-2 rounded-lg border border-stone-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
+          className="w-full px-3 py-2 rounded-md border border-neutral-200 bg-white text-sm focus:outline-none focus:border-[#2d5a3f]/50"
         />
       </div>
 
       {/* Vibe */}
       <div>
-        <label className="block text-xs text-stone-500 mb-1">Vibe</label>
+        <label className="block text-xs text-neutral-500 mb-1">Vibe</label>
         <div className="flex gap-2">
           {(Object.keys(VIBE_CONFIG) as RatingVibe[]).map((v) => (
             <button
@@ -151,8 +151,8 @@ export default function AddSourceForm({
               onClick={() => setRatingVibe(v)}
               className={`text-xs px-3 py-1.5 rounded-full border ${
                 ratingVibe === v
-                  ? "border-green-400 bg-green-50 text-green-800"
-                  : "border-stone-200 text-stone-600 hover:bg-stone-100"
+                  ? "border-[#2d5a3f]/40 bg-[#f2f7f4] text-[#1a3628]"
+                  : "border-neutral-200 text-neutral-600 hover:bg-neutral-100"
               }`}
             >
               {VIBE_CONFIG[v].emoji} {VIBE_CONFIG[v].label}
@@ -163,7 +163,7 @@ export default function AddSourceForm({
 
       {/* Caption (optional) */}
       <div>
-        <label className="block text-xs text-stone-500 mb-1">
+        <label className="block text-xs text-neutral-500 mb-1">
           Caption / title (optional)
         </label>
         <input
@@ -171,7 +171,7 @@ export default function AddSourceForm({
           value={caption}
           onChange={(e) => setCaption(e.target.value)}
           placeholder="Original post caption"
-          className="w-full px-3 py-2 rounded-lg border border-stone-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
+          className="w-full px-3 py-2 rounded-md border border-neutral-200 bg-white text-sm focus:outline-none focus:border-[#2d5a3f]/50"
         />
       </div>
 
@@ -180,14 +180,14 @@ export default function AddSourceForm({
         <button
           type="button"
           onClick={onDone}
-          className="text-xs px-3 py-1.5 text-stone-500 hover:text-stone-700"
+          className="text-xs px-3 py-1.5 text-neutral-500 hover:text-neutral-700"
         >
           Cancel
         </button>
         <button
           type="submit"
           disabled={!url.trim()}
-          className="text-xs px-4 py-1.5 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 disabled:opacity-40"
+          className="text-xs px-4 py-1.5 text-[#2d5a3f] border border-[#2d5a3f]/30 rounded-md font-medium hover:bg-[#2d5a3f]/5 disabled:opacity-40"
         >
           Add source
         </button>

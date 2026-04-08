@@ -80,12 +80,12 @@ export default function CityPage() {
   return (
     <div className="min-h-full flex flex-col">
       {/* Header */}
-      <header className="border-b border-stone-200 bg-white sticky top-0 z-10">
+      <header className="border-b border-neutral-200 bg-white sticky top-0 z-10">
         <div className="max-w-5xl mx-auto px-6 py-4">
           <div className="flex items-center gap-3 mb-1">
             <button
               onClick={() => router.push("/home")}
-              className="text-stone-400 hover:text-stone-600 text-sm"
+              className="text-neutral-400 hover:text-neutral-600 text-sm"
             >
               &larr; Cities
             </button>
@@ -95,7 +95,7 @@ export default function CityPage() {
               <h1 className="text-xl font-semibold">
                 {city.name}
               </h1>
-              <div className="flex items-center gap-4 mt-1 text-xs text-stone-500">
+              <div className="flex items-center gap-4 mt-1 text-xs text-neutral-500">
                 {(city.dates_start || city.dates_end) && (
                   <span>
                     {city.dates_start} — {city.dates_end || "?"}
@@ -107,13 +107,13 @@ export default function CityPage() {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => router.push(`/city/${cityId}/planner`)}
-                className="text-sm px-4 py-2 border border-stone-200 text-stone-600 rounded-lg font-medium hover:bg-stone-50"
+                className="text-sm px-4 py-2 border border-neutral-200 text-neutral-600 rounded-md font-medium hover:bg-neutral-50"
               >
                 Day Planner
               </button>
               <button
                 onClick={() => setShowAddPlace(true)}
-                className="text-sm px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700"
+                className="text-sm px-4 py-2 text-[#2d5a3f] border border-[#2d5a3f]/30 rounded-md font-medium hover:bg-[#2d5a3f]/5"
               >
                 + Add place
               </button>
@@ -123,7 +123,7 @@ export default function CityPage() {
       </header>
 
       {/* Filters */}
-      <div className="border-b border-stone-100 bg-white">
+      <div className="border-b border-neutral-100 bg-white">
         <div className="max-w-5xl mx-auto px-6 py-3 flex items-center gap-6">
           {/* Category filters */}
           <div className="flex items-center gap-1.5 flex-wrap">
@@ -131,8 +131,8 @@ export default function CityPage() {
               onClick={() => setFilterCategory(null)}
               className={`text-xs px-2.5 py-1 rounded-full ${
                 !filterCategory
-                  ? "bg-stone-800 text-white"
-                  : "bg-stone-100 text-stone-600 hover:bg-stone-200"
+                  ? "bg-neutral-800 text-white"
+                  : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"
               }`}
             >
               All
@@ -145,8 +145,8 @@ export default function CityPage() {
                 }
                 className={`text-xs px-2.5 py-1 rounded-full ${
                   filterCategory === cat
-                    ? "bg-stone-800 text-white"
-                    : "bg-stone-100 text-stone-600 hover:bg-stone-200"
+                    ? "bg-neutral-800 text-white"
+                    : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"
                 }`}
               >
                 {CATEGORY_CONFIG[cat].emoji} {CATEGORY_CONFIG[cat].label}
@@ -154,7 +154,7 @@ export default function CityPage() {
             ))}
           </div>
 
-          <div className="h-4 w-px bg-stone-200" />
+          <div className="h-4 w-px bg-neutral-200" />
 
           {/* Priority filters */}
           <div className="flex items-center gap-1.5">
@@ -166,7 +166,7 @@ export default function CityPage() {
                 }
                 className={`text-xs px-2.5 py-1 rounded-full ${
                   filterPriority === p
-                    ? "bg-stone-800 text-white"
+                    ? "bg-neutral-800 text-white"
                     : `${PRIORITY_CONFIG[p].color} hover:opacity-80`
                 }`}
               >
@@ -179,7 +179,7 @@ export default function CityPage() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as SortKey)}
-              className="text-xs text-stone-500 bg-transparent border-none focus:outline-none cursor-pointer"
+              className="text-xs text-neutral-500 bg-transparent border-none focus:outline-none cursor-pointer"
             >
               <option value="date">Newest first</option>
               <option value="name">Name A-Z</option>
@@ -195,7 +195,7 @@ export default function CityPage() {
         <div className="max-w-5xl mx-auto px-6 py-6">
           {filteredPlaces.length === 0 ? (
             <div className="text-center py-20">
-              <p className="text-stone-400 text-sm mb-4">
+              <p className="text-neutral-400 text-sm mb-4">
                 {places.length === 0
                   ? "No places saved yet. Start adding your finds!"
                   : "No places match your filters."}
@@ -203,7 +203,7 @@ export default function CityPage() {
               {places.length === 0 && (
                 <button
                   onClick={() => setShowAddPlace(true)}
-                  className="text-sm text-green-600 hover:text-green-700 font-medium"
+                  className="text-sm text-[#2d5a3f] hover:text-[#234a33] font-medium"
                 >
                   + Add your first place
                 </button>

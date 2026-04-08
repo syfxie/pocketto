@@ -25,7 +25,7 @@ export default function DraggablePlace({ place, dayPlans, onAddToDay }: Props) {
     <div
       ref={setNodeRef}
       style={style}
-      className="bg-white rounded-lg border border-stone-200 px-3 py-2 cursor-grab active:cursor-grabbing hover:border-stone-300 hover:shadow-sm"
+      className="bg-white rounded-md border border-neutral-200 px-3 py-2 cursor-grab active:cursor-grabbing hover:border-neutral-300 hover:"
       {...attributes}
       {...listeners}
     >
@@ -36,7 +36,7 @@ export default function DraggablePlace({ place, dayPlans, onAddToDay }: Props) {
         <div className="min-w-0">
           <p className="text-sm font-medium truncate">{place.name}</p>
           {place.address && (
-            <p className="text-xs text-stone-400 truncate">{place.address}</p>
+            <p className="text-xs text-neutral-400 truncate">{place.address}</p>
           )}
         </div>
       </div>
@@ -50,7 +50,7 @@ export default function DraggablePlace({ place, dayPlans, onAddToDay }: Props) {
                 e.stopPropagation();
                 onAddToDay(plan.id, place.id);
               }}
-              className="text-[10px] px-2 py-0.5 rounded bg-stone-100 text-stone-500 hover:bg-green-50 hover:text-green-700"
+              className="text-[10px] px-2 py-0.5 rounded bg-neutral-100 text-neutral-500 hover:bg-[#f2f7f4] hover:text-[#234a33]"
             >
               + D{i + 1}
             </button>
