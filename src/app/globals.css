@@ -35,6 +35,10 @@ button:not(:disabled), a, select, [role="button"] {
   border-radius: 3px;
 }
 
+/* Hide scrollbar for horizontal filter bars */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
 /* Minimal scrollbar */
 ::-webkit-scrollbar {
   width: 4px;

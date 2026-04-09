@@ -109,27 +109,48 @@ export default function CityPage() {
     <div className="min-h-full flex flex-col">
       {/* Header */}
       <header className="border-b border-neutral-200 bg-white sticky top-0 z-10">
-        <div className="max-w-5xl mx-auto px-6 py-4">
-          <div className="flex items-center gap-3 mb-1">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
+          <div className="flex items-center justify-between mb-1">
             <button
               onClick={() => router.push("/home")}
               className="text-neutral-400 hover:text-neutral-600 text-sm"
             >
               &larr; Cities
             </button>
+            {/* Mobile: compact action buttons */}
+            <div className="flex items-center gap-1.5 sm:hidden">
+              <button
+                onClick={() => router.push(`/city/${cityId}/planner`)}
+                className="text-xs px-2.5 py-1.5 border border-neutral-200 text-neutral-500 rounded-md"
+              >
+                Planner
+              </button>
+              <button
+                onClick={() => router.push(`/city/${cityId}/import`)}
+                className="text-xs px-2.5 py-1.5 border border-neutral-200 text-neutral-500 rounded-md"
+              >
+                Import
+              </button>
+              <button
+                onClick={() => setShowAddPlace(true)}
+                className="text-xs px-2.5 py-1.5 text-[#2d5a3f] border border-[#2d5a3f]/30 rounded-md"
+              >
+                + Add
+              </button>
+            </div>
           </div>
           <div className="flex items-start justify-between">
             <div>
-              <h1 className="text-xl font-semibold">
+              <h1 className="text-lg sm:text-xl font-semibold">
                 {city.name}
               </h1>
-              <div className="flex items-center gap-4 mt-1 text-xs text-neutral-500">
+              <div className="flex items-center gap-3 sm:gap-4 mt-0.5 text-xs text-neutral-500">
                 {(city.dates_start || city.dates_end) && (
                   <span>
                     {city.dates_start} — {city.dates_end || "?"}
                   </span>
                 )}
-                {city.stay_name && <span>🏠 {city.stay_name}</span>}
+                {city.stay_name && <span className="hidden sm:inline">🏠 {city.stay_name}</span>}
                 <button
                   onClick={() => setShowEditCity(true)}
                   className="text-neutral-300 hover:text-neutral-500"
@@ -138,7 +159,8 @@ export default function CityPage() {
                 </button>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            {/* Desktop: full action buttons */}
+            <div className="hidden sm:flex items-center gap-2">
               <button
                 onClick={() => router.push(`/city/${cityId}/planner`)}
                 className="text-sm px-4 py-2 border border-neutral-200 text-neutral-600 rounded-md font-medium hover:bg-neutral-50"
@@ -164,84 +186,84 @@ export default function CityPage() {
 
       {/* Search + Filters */}
       <div className="border-b border-neutral-100 bg-white">
-        <div className="max-w-5xl mx-auto px-6 py-3 flex items-center gap-6">
-          {/* Search */}
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search places..."
-            className="w-40 px-2.5 py-1 rounded-md border border-neutral-200 text-xs focus:outline-none focus:border-[#2d5a3f]/50 placeholder:text-neutral-300"
-          />
-          {/* Category filters */}
-          <div className="flex items-center gap-1.5 flex-wrap">
-            <button
-              onClick={() => setFilterCategory(null)}
-              className={`text-xs px-2.5 py-1 rounded-full ${
-                !filterCategory
-                  ? "bg-neutral-800 text-white"
-                  : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"
-              }`}
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-2.5 sm:py-3 space-y-2">
+          {/* Search + Sort row */}
+          <div className="flex items-center gap-3">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search..."
+              className="flex-1 sm:flex-none sm:w-40 px-2.5 py-1 rounded-md border border-neutral-200 text-xs focus:outline-none focus:border-[#2d5a3f]/50 placeholder:text-neutral-300"
+            />
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as SortKey)}
+              className="text-xs text-neutral-500 bg-transparent border-none focus:outline-none"
             >
-              All
-            </button>
-            {activeCategories.map((cat) => (
+              <option value="date">Newest</option>
+              <option value="name">A-Z</option>
+              <option value="priority">Priority</option>
+              <option value="sources">Sources</option>
+              <option value="confidence">Confidence</option>
+            </select>
+          </div>
+          {/* Category + Priority filters — horizontally scrollable on mobile */}
+          <div className="flex items-center gap-4 overflow-x-auto pb-0.5 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-hide">
+            <div className="flex items-center gap-1.5 flex-shrink-0">
               <button
-                key={cat}
-                onClick={() =>
-                  setFilterCategory(filterCategory === cat ? null : cat)
-                }
-                className={`text-xs px-2.5 py-1 rounded-full ${
-                  filterCategory === cat
+                onClick={() => setFilterCategory(null)}
+                className={`text-xs px-2.5 py-1 rounded-full whitespace-nowrap ${
+                  !filterCategory
                     ? "bg-neutral-800 text-white"
                     : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"
                 }`}
               >
-                {CATEGORY_CONFIG[cat].emoji} {CATEGORY_CONFIG[cat].label}
+                All
               </button>
-            ))}
-          </div>
+              {activeCategories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() =>
+                    setFilterCategory(filterCategory === cat ? null : cat)
+                  }
+                  className={`text-xs px-2.5 py-1 rounded-full whitespace-nowrap ${
+                    filterCategory === cat
+                      ? "bg-neutral-800 text-white"
+                      : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"
+                  }`}
+                >
+                  {CATEGORY_CONFIG[cat].emoji} {CATEGORY_CONFIG[cat].label}
+                </button>
+              ))}
+            </div>
 
-          <div className="h-4 w-px bg-neutral-200" />
+            <div className="h-4 w-px bg-neutral-200 flex-shrink-0" />
 
-          {/* Priority filters */}
-          <div className="flex items-center gap-1.5">
-            {(Object.keys(PRIORITY_CONFIG) as Priority[]).map((p) => (
-              <button
-                key={p}
-                onClick={() =>
-                  setFilterPriority(filterPriority === p ? null : p)
-                }
-                className={`text-xs px-2.5 py-1 rounded-full ${
-                  filterPriority === p
-                    ? "bg-neutral-800 text-white"
-                    : `${PRIORITY_CONFIG[p].color} hover:opacity-80`
-                }`}
-              >
-                {PRIORITY_CONFIG[p].label}
-              </button>
-            ))}
-          </div>
-
-          <div className="ml-auto">
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as SortKey)}
-              className="text-xs text-neutral-500 bg-transparent border-none focus:outline-none cursor-pointer"
-            >
-              <option value="date">Newest first</option>
-              <option value="name">Name A-Z</option>
-              <option value="priority">Priority</option>
-              <option value="sources">Most sources</option>
-              <option value="confidence">Confidence</option>
-            </select>
+            <div className="flex items-center gap-1.5 flex-shrink-0">
+              {(Object.keys(PRIORITY_CONFIG) as Priority[]).map((p) => (
+                <button
+                  key={p}
+                  onClick={() =>
+                    setFilterPriority(filterPriority === p ? null : p)
+                  }
+                  className={`text-xs px-2.5 py-1 rounded-full whitespace-nowrap ${
+                    filterPriority === p
+                      ? "bg-neutral-800 text-white"
+                      : `${PRIORITY_CONFIG[p].color} hover:opacity-80`
+                  }`}
+                >
+                  {PRIORITY_CONFIG[p].label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
 
       {/* Content */}
       <main className="flex-1">
-        <div className="max-w-5xl mx-auto px-6 py-6">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
           {filteredPlaces.length === 0 ? (
             <div className="text-center py-20">
               <p className="text-neutral-400 text-sm mb-4">
