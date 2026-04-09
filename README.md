@@ -61,13 +61,31 @@ supabase/
 
 ## Roadmap
 
+### Up Next
+
+- [ ] **Share-to-Pocketto** — PWA share target + quick-add URL so you can share links from TikTok/RedNote/Instagram directly into the app. iOS Shortcut fallback for non-PWA users
+- [ ] **Visit Feedback** — Mark places as visited with a rating (great / ok / skip). Shows checkmark on visited places in city view and day planner
+- [ ] **Confidence Score** — Auto-computed from source count + vibes (loved=3, recommended=2, mixed=1, warned=-1). Visual indicator on place cards, sortable
+- [ ] **Daily Briefing** — "Today" card on home page that jumps straight to today's itinerary when a day plan matches the current date
+- [ ] **Bulk Import** — Paste multiple URLs at once, auto-detect platforms, batch-assign to places
+
+### Planned
+
+- [ ] Smart day suggestions (auto-cluster nearby places into day plans)
+- [ ] Meal slot awareness (breakfast/lunch/dinner time blocks in day planner)
+- [ ] "What's missing" prompts (no dinner planned, no activities, etc.)
+- [ ] Similar place comparison (6 hotpot spots? compare side by side)
+- [ ] Conflict detection (one source says "amazing", another says "tourist trap")
+- [ ] Source quality tracking (which RedNote accounts give consistently good recs)
+- [ ] Trip templates (share a completed itinerary for others to fork)
+- [ ] Screenshot OCR (upload a screenshot, extract place name via LLM)
+
+### Polish
+
 - [ ] Cmd+K keyboard shortcut for quick-add
 - [ ] Undo toast when removing a day plan stop
-- [ ] Reorder cities on the home page (drag-and-drop)
-- [ ] Shorter add-place flow (collapse categories into dropdown or two-step)
+- [ ] Reorder cities on home page (drag-and-drop)
 - [ ] Show "planned" indicator on places already assigned to a day
-- [ ] Source count visual weight (bolder border for high-confidence places)
-- [ ] Better empty states with onboarding hints
 - [ ] Persist filter state across navigation
 - [ ] Map view with Mapbox GL JS
 - [ ] Proximity clustering on city map
