@@ -44,6 +44,8 @@ export type Platform =
 
 export type RatingVibe = "loved" | "recommended" | "mixed" | "warned_against";
 
+export type VisitRating = "great" | "ok" | "skip";
+
 export type PaymentMethod =
   | "wechat_pay"
   | "alipay"
@@ -105,6 +107,8 @@ export interface Place {
   reservation_url: string | null;
   notes: string | null;
   summary: string | null;
+  visited: boolean;
+  visit_rating: VisitRating | null;
   created_at: string;
 }
 

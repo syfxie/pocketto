@@ -10,7 +10,7 @@ import {
   VIBE_CONFIG,
   PAYMENT_CONFIG,
 } from "@/lib/constants";
-import { Category, Priority, PaymentMethod } from "@/lib/types";
+import { Category, Priority, PaymentMethod, VisitRating } from "@/lib/types";
 import AddSourceForm from "@/components/AddSourceForm";
 import { showToast } from "@/components/Toast";
 
@@ -405,6 +405,43 @@ export default function PlaceDetail({ placeId, memberId, onClose }: Props) {
               );
             })}
           </div>
+        )}
+      </div>
+
+      {/* Visit Feedback */}
+      <div className="mb-4 flex items-center gap-3">
+        <span className="text-xs text-neutral-400">Visited?</span>
+        {(["great", "ok", "skip"] as VisitRating[]).map((r) => {
+          const labels: Record<VisitRating, { emoji: string; label: string }> = {
+            great: { emoji: "👍", label: "Great" },
+            ok: { emoji: "👌", label: "OK" },
+            skip: { emoji: "👎", label: "Skip" },
+          };
+          const isActive = place.visited && place.visit_rating === r;
+          return (
+            <button
+              key={r}
+              onClick={async () => {
+                if (isActive) {
+                  await updatePlace(placeId, { visited: false, visit_rating: null });
+                  showToast("Unmarked");
+                } else {
+                  await updatePlace(placeId, { visited: true, visit_rating: r });
+                  showToast(`Marked as ${labels[r].label.toLowerCase()}`);
+                }
+              }}
+              className={`text-xs px-2.5 py-1 rounded-full border ${
+                isActive
+                  ? "border-[#2d5a3f]/40 bg-[#2d5a3f]/10 text-[#2d5a3f]"
+                  : "border-neutral-200 text-neutral-400 hover:border-neutral-300"
+              }`}
+            >
+              {labels[r].emoji} {labels[r].label}
+            </button>
+          );
+        })}
+        {place.visited && (
+          <span className="text-xs text-[#2d5a3f]/60">Visited</span>
         )}
       </div>
 

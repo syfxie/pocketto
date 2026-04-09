@@ -156,7 +156,7 @@ async function fetchGroupData(groupId: string): Promise<void> {
 // Supabase returns snake_case which matches our types directly.
 // Just ensure defaults for nullable array/boolean fields.
 function ensurePlaceDefaults(p: Place): Place {
-  return { ...p, payment: p.payment || [], reservation_required: p.reservation_required || false };
+  return { ...p, payment: p.payment || [], reservation_required: p.reservation_required || false, visited: p.visited || false, visit_rating: p.visit_rating || null };
 }
 
 // --- Helpers ---

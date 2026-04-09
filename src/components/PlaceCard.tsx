@@ -33,7 +33,12 @@ export default function PlaceCard({
           <span className="text-lg flex-shrink-0">{cat.emoji}</span>
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <span className="font-medium text-sm truncate">
+              {place.visited && (
+                <span className="text-[#2d5a3f] text-xs flex-shrink-0" title={place.visit_rating || "visited"}>
+                  {place.visit_rating === "great" ? "👍" : place.visit_rating === "skip" ? "👎" : "✓"}
+                </span>
+              )}
+              <span className={`font-medium text-sm truncate ${place.visited ? "text-neutral-400" : ""}`}>
                 {place.name}
               </span>
             </div>

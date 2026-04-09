@@ -53,6 +53,13 @@ export const VIBE_CONFIG: Record<RatingVibe, { label: string; emoji: string }> =
   warned_against: { label: "Skip", emoji: "👎" },
 };
 
+export const VIBE_SCORES: Record<RatingVibe, number> = {
+  loved: 3,
+  recommended: 2,
+  mixed: 1,
+  warned_against: -1,
+};
+
 export const PAYMENT_CONFIG: Record<PaymentMethod, { label: string }> = {
   wechat_pay: { label: "WeChat Pay" },
   alipay: { label: "Alipay" },

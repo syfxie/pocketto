@@ -4,14 +4,16 @@ import { useState, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useCity, usePlaces, useCurrentGroup, useStore } from "@/lib/use-store";
 import { deleteCity } from "@/lib/store";
-import { CATEGORY_CONFIG, PRIORITY_CONFIG } from "@/lib/constants";
+import { CATEGORY_CONFIG, PRIORITY_CONFIG, VIBE_SCORES } from "@/lib/constants";
 import { Category, Priority } from "@/lib/types";
 import PlaceCard from "@/components/PlaceCard";
 import PlaceDetail from "@/components/PlaceDetail";
 import AddPlaceModal from "@/components/AddPlaceModal";
 import EditCityModal from "@/components/EditCityModal";
 
-type SortKey = "name" | "priority" | "date" | "sources";
+import { RatingVibe } from "@/lib/types";
+
+type SortKey = "name" | "priority" | "date" | "sources" | "confidence";
 
 export default function CityPage() {
   const params = useParams();
@@ -44,6 +46,18 @@ export default function CityPage() {
     return counts;
   }, [places, store.sources]);
 
+  const confidenceScores = useMemo(() => {
+    const scores: Record<string, number> = {};
+    for (const place of places) {
+      const placeSources = store.sources.filter((s) => s.place_id === place.id);
+      scores[place.id] = placeSources.reduce(
+        (sum, s) => sum + (VIBE_SCORES[s.rating_vibe as RatingVibe] || 0),
+        0
+      );
+    }
+    return scores;
+  }, [places, store.sources]);
+
   const filteredPlaces = useMemo(() => {
     let result = [...places];
     if (searchQuery.trim()) {
@@ -72,6 +86,9 @@ export default function CityPage() {
       case "sources":
         result.sort((a, b) => (sourceCounts[b.id] || 0) - (sourceCounts[a.id] || 0));
         break;
+      case "confidence":
+        result.sort((a, b) => (confidenceScores[b.id] || 0) - (confidenceScores[a.id] || 0));
+        break;
       case "date":
       default:
         result.sort(
@@ -80,7 +97,7 @@ export default function CityPage() {
         break;
     }
     return result;
-  }, [places, searchQuery, filterCategory, filterPriority, sortBy, sourceCounts]);
+  }, [places, searchQuery, filterCategory, filterPriority, sortBy, sourceCounts, confidenceScores]);
 
   // Unique categories present in this city's places
   const activeCategories = useMemo(() => {
@@ -210,6 +227,7 @@ export default function CityPage() {
               <option value="name">Name A-Z</option>
               <option value="priority">Priority</option>
               <option value="sources">Most sources</option>
+              <option value="confidence">Confidence</option>
             </select>
           </div>
         </div>

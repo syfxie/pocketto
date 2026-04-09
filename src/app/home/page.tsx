@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useCurrentGroup, useCities, useStore } from "@/lib/use-store";
 import { createCity, clearSession } from "@/lib/store";
+import { CATEGORY_CONFIG } from "@/lib/constants";
 import AddCityModal from "@/components/AddCityModal";
 
 export default function HomePage() {
@@ -23,6 +24,24 @@ export default function HomePage() {
     ...city,
     placeCount: store.places.filter((p) => p.city_id === city.id).length,
   }));
+
+  // Find today's plan
+  const todayPlan = useMemo(() => {
+    const today = new Date().toISOString().split("T")[0];
+    for (const plan of store.dayPlans) {
+      if (plan.date === today) {
+        const city = cities.find((c) => c.id === plan.city_id);
+        const stops = store.dayPlanStops
+          .filter((s) => s.day_plan_id === plan.id)
+          .sort((a, b) => a.sort_order - b.sort_order);
+        const places = stops
+          .map((s) => store.places.find((p) => p.id === s.place_id))
+          .filter(Boolean);
+        return { plan, city, stops, places };
+      }
+    }
+    return null;
+  }, [store.dayPlans, store.dayPlanStops, store.places, cities]);
 
   return (
     <div className="min-h-full">
@@ -73,6 +92,26 @@ export default function HomePage() {
 
       {/* Content */}
       <main className="max-w-4xl mx-auto px-6 py-8">
+        {/* Today's Plan */}
+        {todayPlan && todayPlan.city && (
+          <button
+            onClick={() => router.push(`/city/${todayPlan.city!.id}/planner`)}
+            className="w-full text-left mb-8 p-5 rounded-lg border border-[#2d5a3f]/20 bg-[#f2f7f4] hover:border-[#2d5a3f]/30"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs text-[#2d5a3f]/60 uppercase tracking-wide">Today</span>
+              <span className="text-xs text-neutral-400">{todayPlan.city.name}</span>
+            </div>
+            <p className="font-medium text-sm mb-1.5">{todayPlan.plan.label}</p>
+            <p className="text-xs text-neutral-500">
+              {todayPlan.places.map((p) => `${CATEGORY_CONFIG[p!.category]?.emoji} ${p!.name}`).join("  ·  ")}
+            </p>
+            <p className="text-xs text-neutral-400 mt-1">
+              {todayPlan.stops.length} {todayPlan.stops.length === 1 ? "stop" : "stops"} planned →
+            </p>
+          </button>
+        )}
+
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-sm font-medium text-neutral-500 uppercase tracking-wide">
             Cities
