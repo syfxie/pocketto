@@ -146,6 +146,12 @@ export default function CityPage() {
                 Day Planner
               </button>
               <button
+                onClick={() => router.push(`/city/${cityId}/import`)}
+                className="text-sm px-4 py-2 border border-neutral-200 text-neutral-600 rounded-md font-medium hover:bg-neutral-50"
+              >
+                Import
+              </button>
+              <button
                 onClick={() => setShowAddPlace(true)}
                 className="text-sm px-4 py-2 text-[#2d5a3f] border border-[#2d5a3f]/30 rounded-md font-medium hover:bg-[#2d5a3f]/5"
               >
