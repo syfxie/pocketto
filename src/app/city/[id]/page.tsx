@@ -9,6 +9,7 @@ import { Category, Priority } from "@/lib/types";
 import PlaceCard from "@/components/PlaceCard";
 import PlaceDetail from "@/components/PlaceDetail";
 import AddPlaceModal from "@/components/AddPlaceModal";
+import EditCityModal from "@/components/EditCityModal";
 
 type SortKey = "name" | "priority" | "date" | "sources";
 
@@ -23,9 +24,11 @@ export default function CityPage() {
 
   const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null);
   const [showAddPlace, setShowAddPlace] = useState(false);
+  const [showEditCity, setShowEditCity] = useState(false);
   const [filterCategory, setFilterCategory] = useState<Category | null>(null);
   const [filterPriority, setFilterPriority] = useState<Priority | null>(null);
   const [sortBy, setSortBy] = useState<SortKey>("date");
+  const [searchQuery, setSearchQuery] = useState("");
 
   if (!city || !group || !member) {
     return null;
@@ -43,6 +46,14 @@ export default function CityPage() {
 
   const filteredPlaces = useMemo(() => {
     let result = [...places];
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter(
+        (p) =>
+          p.name.toLowerCase().includes(q) ||
+          (p.address && p.address.toLowerCase().includes(q))
+      );
+    }
     if (filterCategory) {
       result = result.filter((p) => p.category === filterCategory);
     }
@@ -69,7 +80,7 @@ export default function CityPage() {
         break;
     }
     return result;
-  }, [places, filterCategory, filterPriority, sortBy, sourceCounts]);
+  }, [places, searchQuery, filterCategory, filterPriority, sortBy, sourceCounts]);
 
   // Unique categories present in this city's places
   const activeCategories = useMemo(() => {
@@ -102,6 +113,12 @@ export default function CityPage() {
                   </span>
                 )}
                 {city.stay_name && <span>🏠 {city.stay_name}</span>}
+                <button
+                  onClick={() => setShowEditCity(true)}
+                  className="text-neutral-300 hover:text-neutral-500"
+                >
+                  Edit
+                </button>
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -122,9 +139,17 @@ export default function CityPage() {
         </div>
       </header>
 
-      {/* Filters */}
+      {/* Search + Filters */}
       <div className="border-b border-neutral-100 bg-white">
         <div className="max-w-5xl mx-auto px-6 py-3 flex items-center gap-6">
+          {/* Search */}
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search places..."
+            className="w-40 px-2.5 py-1 rounded-md border border-neutral-200 text-xs focus:outline-none focus:border-[#2d5a3f]/50 placeholder:text-neutral-300"
+          />
           {/* Category filters */}
           <div className="flex items-center gap-1.5 flex-wrap">
             <button
@@ -242,6 +267,13 @@ export default function CityPage() {
           cityId={cityId}
           memberId={member.id}
           onClose={() => setShowAddPlace(false)}
+        />
+      )}
+
+      {showEditCity && (
+        <EditCityModal
+          city={city}
+          onClose={() => setShowEditCity(false)}
         />
       )}
     </div>

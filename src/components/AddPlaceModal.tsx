@@ -5,6 +5,7 @@ import { createPlace, createSource } from "@/lib/store";
 import { CATEGORY_CONFIG, PRIORITY_CONFIG } from "@/lib/constants";
 import { Category, Priority, FoodCategory, ActivityCategory } from "@/lib/types";
 import { parseSourceUrl } from "@/lib/url-parser";
+import { showToast } from "@/components/Toast";
 
 interface Props {
   cityId: string;
@@ -58,6 +59,7 @@ export default function AddPlaceModal({ cityId, memberId, onClose }: Props) {
       });
     }
 
+    if (place) showToast(`Added ${place.name}`);
     onClose();
   }
 

@@ -10,8 +10,9 @@ import {
   VIBE_CONFIG,
   PAYMENT_CONFIG,
 } from "@/lib/constants";
-import { PaymentMethod } from "@/lib/types";
+import { Category, Priority, PaymentMethod } from "@/lib/types";
 import AddSourceForm from "@/components/AddSourceForm";
+import { showToast } from "@/components/Toast";
 
 interface Props {
   placeId: string;
@@ -35,7 +36,33 @@ export default function PlaceDetail({ placeId, memberId, onClose }: Props) {
   const [summaryDraft, setSummaryDraft] = useState(place?.summary || "");
   const [confirmDelete, setConfirmDelete] = useState(false);
 
+  // Inline editable fields
+  const [editingName, setEditingName] = useState(false);
+  const [nameDraft, setNameDraft] = useState(place?.name || "");
+  const [editingAddress, setEditingAddress] = useState(false);
+  const [addressDraft, setAddressDraft] = useState(place?.address || "");
+  const [editingHours, setEditingHours] = useState(false);
+  const [hoursDraft, setHoursDraft] = useState(place?.hours_note || "");
+
   if (!place) return null;
+
+  async function handleSaveName() {
+    if (nameDraft.trim()) {
+      await updatePlace(placeId, { name: nameDraft.trim() });
+      showToast("Name updated");
+    }
+    setEditingName(false);
+  }
+
+  async function handleSaveAddress() {
+    await updatePlace(placeId, { address: addressDraft.trim() || null });
+    setEditingAddress(false);
+  }
+
+  async function handleSaveHours() {
+    await updatePlace(placeId, { hours_note: hoursDraft.trim() || null });
+    setEditingHours(false);
+  }
 
   async function handleSaveNotes() {
     await updatePlace(placeId, { notes: notesDraft.trim() || null });
@@ -47,27 +74,122 @@ export default function PlaceDetail({ placeId, memberId, onClose }: Props) {
     setEditingSummary(false);
   }
 
+  async function handleCategoryChange(cat: Category) {
+    await updatePlace(placeId, { category: cat });
+    showToast(`Category → ${CATEGORY_CONFIG[cat].label}`);
+  }
+
+  async function handlePriorityChange(pri: Priority) {
+    await updatePlace(placeId, { priority: pri });
+    showToast(`Priority → ${PRIORITY_CONFIG[pri].label}`);
+  }
+
   async function handleDelete() {
+    const placeName = place?.name || "place";
     await deletePlace(placeId);
+    showToast(`Deleted ${placeName}`);
     onClose();
   }
 
   return (
-    <div className="bg-white border border-t-0 border-neutral-200 rounded-b-lg px-6 py-5 -mt-1">
+    <div className="bg-white border border-t-0 border-neutral-200 rounded-b-md px-6 py-5 -mt-1">
+      {/* Editable name */}
+      <div className="mb-4">
+        {editingName ? (
+          <input
+            type="text"
+            value={nameDraft}
+            onChange={(e) => setNameDraft(e.target.value)}
+            onBlur={handleSaveName}
+            onKeyDown={(e) => e.key === "Enter" && handleSaveName()}
+            className="text-base font-medium w-full px-1 py-0.5 rounded border border-[#2d5a3f]/30 focus:outline-none"
+            autoFocus
+          />
+        ) : (
+          <button
+            onClick={() => { setNameDraft(place.name); setEditingName(true); }}
+            className="text-base font-medium hover:text-[#2d5a3f] text-left"
+          >
+            {place.name}
+          </button>
+        )}
+      </div>
+
+      {/* Category + Priority toggles */}
+      <div className="flex items-center gap-4 mb-4">
+        <div className="flex items-center gap-1.5">
+          {(Object.keys(PRIORITY_CONFIG) as Priority[]).map((p) => (
+            <button
+              key={p}
+              onClick={() => handlePriorityChange(p)}
+              className={`text-xs px-2 py-0.5 rounded-full border ${
+                place.priority === p
+                  ? "border-[#2d5a3f]/40 " + PRIORITY_CONFIG[p].color
+                  : "border-transparent text-neutral-300 hover:text-neutral-500"
+              }`}
+            >
+              {PRIORITY_CONFIG[p].label}
+            </button>
+          ))}
+        </div>
+        <span className="text-neutral-200">|</span>
+        <select
+          value={place.category}
+          onChange={(e) => handleCategoryChange(e.target.value as Category)}
+          className="text-xs text-neutral-500 bg-transparent border-none focus:outline-none cursor-pointer"
+        >
+          {(Object.keys(CATEGORY_CONFIG) as Category[]).map((cat) => (
+            <option key={cat} value={cat}>
+              {CATEGORY_CONFIG[cat].emoji} {CATEGORY_CONFIG[cat].label}
+            </option>
+          ))}
+        </select>
+      </div>
+
       {/* Properties */}
       <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm mb-5">
-        {place.address && (
-          <div className="flex items-start gap-2">
-            <span className="text-neutral-400 w-20 flex-shrink-0">Address</span>
-            <span>{place.address}</span>
-          </div>
-        )}
-        {place.hours_note && (
-          <div className="flex items-start gap-2">
-            <span className="text-neutral-400 w-20 flex-shrink-0">Hours</span>
-            <span>{place.hours_note}</span>
-          </div>
-        )}
+        <div className="flex items-start gap-2">
+          <span className="text-neutral-400 w-20 flex-shrink-0">Address</span>
+          {editingAddress ? (
+            <input
+              type="text"
+              value={addressDraft}
+              onChange={(e) => setAddressDraft(e.target.value)}
+              onBlur={handleSaveAddress}
+              onKeyDown={(e) => e.key === "Enter" && handleSaveAddress()}
+              className="flex-1 px-1 py-0.5 rounded border border-[#2d5a3f]/30 text-sm focus:outline-none"
+              autoFocus
+            />
+          ) : (
+            <button
+              onClick={() => { setAddressDraft(place.address || ""); setEditingAddress(true); }}
+              className="text-left hover:text-[#2d5a3f]"
+            >
+              {place.address || <span className="text-neutral-300 italic">Add address</span>}
+            </button>
+          )}
+        </div>
+        <div className="flex items-start gap-2">
+          <span className="text-neutral-400 w-20 flex-shrink-0">Hours</span>
+          {editingHours ? (
+            <input
+              type="text"
+              value={hoursDraft}
+              onChange={(e) => setHoursDraft(e.target.value)}
+              onBlur={handleSaveHours}
+              onKeyDown={(e) => e.key === "Enter" && handleSaveHours()}
+              className="flex-1 px-1 py-0.5 rounded border border-[#2d5a3f]/30 text-sm focus:outline-none"
+              autoFocus
+            />
+          ) : (
+            <button
+              onClick={() => { setHoursDraft(place.hours_note || ""); setEditingHours(true); }}
+              className="text-left hover:text-[#2d5a3f]"
+            >
+              {place.hours_note || <span className="text-neutral-300 italic">Add hours</span>}
+            </button>
+          )}
+        </div>
         {place.payment.length > 0 && (
           <div className="flex items-start gap-2">
             <span className="text-neutral-400 w-20 flex-shrink-0">Payment</span>
@@ -200,7 +322,7 @@ export default function PlaceDetail({ placeId, memberId, onClose }: Props) {
           <p className="text-sm text-neutral-600">
             {place.summary || (
               <span className="text-neutral-400 italic">
-                No notes yet. Click edit to add tips and recommendations.
+                No summary yet. Click edit to add tips and recommendations.
               </span>
             )}
           </p>
@@ -296,10 +418,10 @@ export default function PlaceDetail({ placeId, memberId, onClose }: Props) {
         </button>
         {confirmDelete ? (
           <div className="flex items-center gap-2">
-            <span className="text-xs text-red-500">Delete this place?</span>
+            <span className="text-xs text-red-400">Delete this place?</span>
             <button
               onClick={handleDelete}
-              className="text-xs text-red-600 font-medium hover:text-red-700"
+              className="text-xs text-red-500 font-medium hover:text-red-600"
             >
               Yes, delete
             </button>

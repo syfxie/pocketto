@@ -59,6 +59,25 @@ supabase/
     seed.sql              # Sample data (Dali food spots)
 ```
 
+## Roadmap
+
+- [ ] Cmd+K keyboard shortcut for quick-add
+- [ ] Undo toast when removing a day plan stop
+- [ ] Reorder cities on the home page (drag-and-drop)
+- [ ] Shorter add-place flow (collapse categories into dropdown or two-step)
+- [ ] Show "planned" indicator on places already assigned to a day
+- [ ] Source count visual weight (bolder border for high-confidence places)
+- [ ] Better empty states with onboarding hints
+- [ ] Persist filter state across navigation
+- [ ] Map view with Mapbox GL JS
+- [ ] Proximity clustering on city map
+- [ ] AMap export links for in-country navigation
+- [ ] Mobile-responsive layout
+- [ ] Realtime collaboration (Supabase realtime)
+- [ ] View switcher (list / map / board / day)
+- [ ] LLM-generated place summaries from sources
+- [ ] Offline PWA mode
+
 ## License
 
 MIT

@@ -33,9 +33,9 @@ export const CATEGORY_CONFIG: Record<Category, { label: string; emoji: string; g
 };
 
 export const PRIORITY_CONFIG: Record<Priority, { label: string; color: string }> = {
-  must_go: { label: "Must Go", color: "bg-red-100 text-red-700" },
-  want_to: { label: "Want To", color: "bg-amber-100 text-amber-700" },
-  if_time: { label: "If Time", color: "bg-gray-100 text-gray-600" },
+  must_go: { label: "Must Go", color: "bg-[#2d5a3f]/15 text-[#2d5a3f]" },
+  want_to: { label: "Want To", color: "bg-[#2d5a3f]/8 text-[#2d5a3f]/70" },
+  if_time: { label: "If Time", color: "bg-neutral-100 text-neutral-400" },
 };
 
 export const PLATFORM_CONFIG: Record<Platform, { label: string; color: string; icon: string }> = {

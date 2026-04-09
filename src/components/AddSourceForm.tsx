@@ -5,6 +5,7 @@ import { createSource } from "@/lib/store";
 import { parseSourceUrl, isDuplicateUrl } from "@/lib/url-parser";
 import { PLATFORM_CONFIG, VIBE_CONFIG } from "@/lib/constants";
 import { Platform, RatingVibe } from "@/lib/types";
+import { showToast } from "@/components/Toast";
 
 interface Props {
   placeId: string;
@@ -67,6 +68,7 @@ export default function AddSourceForm({
       key_takeaway: keyTakeaway.trim() || null,
       rating_vibe: ratingVibe,
     });
+    showToast("Source added");
     onDone();
   }
 
