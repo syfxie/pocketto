@@ -18,6 +18,11 @@ button, a, input, select, [role="button"] {
   transition: all 150ms ease;
 }
 
+/* Pointer cursor on interactive elements */
+button:not(:disabled), a, select, [role="button"] {
+  cursor: pointer;
+}
+
 /* Inline editable fields */
 [contenteditable]:focus {
   outline: none;
