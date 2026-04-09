@@ -17,6 +17,13 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Pocketto",
   description: "Your pocket-sized China trip planner",
+  manifest: "/manifest.json",
+  themeColor: "#2d5a3f",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Pocketto",
+  },
 };
 
 export default function RootLayout({
