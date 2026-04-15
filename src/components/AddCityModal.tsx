@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { createCity } from "@/lib/store";
 import { showToast } from "@/components/Toast";
+import { t } from "@/lib/i18n";
 
 interface Props {
   groupId: string;
@@ -34,11 +35,11 @@ export default function AddCityModal({ groupId, onClose }: Props) {
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="absolute inset-0 bg-black/30" onClick={onClose} />
       <div className="relative bg-white rounded-lg shadow-md w-full max-w-md mx-4 p-6">
-        <h2 className="text-lg font-semibold mb-4">Add a city</h2>
+        <h2 className="text-lg font-semibold mb-4">{ t("addCity.title") }</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-xs font-medium text-neutral-500 mb-1">
-              City name
+              {t("addCity.name")}
             </label>
             <input
               type="text"
