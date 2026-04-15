@@ -10,6 +10,8 @@ import PlaceCard from "@/components/PlaceCard";
 import PlaceDetail from "@/components/PlaceDetail";
 import AddPlaceModal from "@/components/AddPlaceModal";
 import EditCityModal from "@/components/EditCityModal";
+import { t } from "@/lib/i18n";
+import { useLocale } from "@/lib/use-locale";
 
 import { RatingVibe } from "@/lib/types";
 
@@ -23,6 +25,7 @@ export default function CityPage() {
   const places = usePlaces(cityId);
   const store = useStore();
   const { group, member } = useCurrentGroup();
+  const locale = useLocale();
 
   const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null);
   const [showAddPlace, setShowAddPlace] = useState(false);
@@ -193,7 +196,7 @@ export default function CityPage() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search..."
+              placeholder={t("city.search")}
               className="flex-1 sm:flex-none sm:w-40 px-2.5 py-1 rounded-md border border-neutral-200 text-xs focus:outline-none focus:border-[#2d5a3f]/50 placeholder:text-neutral-300"
             />
             <select
@@ -201,11 +204,11 @@ export default function CityPage() {
               onChange={(e) => setSortBy(e.target.value as SortKey)}
               className="text-xs text-neutral-500 bg-transparent border-none focus:outline-none"
             >
-              <option value="date">Newest</option>
-              <option value="name">A-Z</option>
-              <option value="priority">Priority</option>
-              <option value="sources">Sources</option>
-              <option value="confidence">Confidence</option>
+              <option value="date">{ t("sort.newest") }</option>
+              <option value="name">{ t("sort.name") }</option>
+              <option value="priority">{ t("sort.priority") }</option>
+              <option value="sources">{ t("sort.sources") }</option>
+              <option value="confidence">{ t("sort.confidence") }</option>
             </select>
           </div>
           {/* Category + Priority filters — horizontally scrollable on mobile */}

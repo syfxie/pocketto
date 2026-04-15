@@ -4,10 +4,14 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createGroup, joinGroup } from "@/lib/store";
 import { useStore } from "@/lib/use-store";
+import { t } from "@/lib/i18n";
+import { useLocale } from "@/lib/use-locale";
+import LocaleToggle from "@/components/LocaleToggle";
 
 export default function LandingPage() {
   const router = useRouter();
   const store = useStore();
+  const locale = useLocale(); // triggers re-render on locale change
   const [mode, setMode] = useState<"choice" | "create" | "join">("choice");
   const [name, setName] = useState("");
   const [nickname, setNickname] = useState("");
@@ -32,7 +36,7 @@ export default function LandingPage() {
     if (!inviteCode.trim() || !nickname.trim()) return;
     const result = await joinGroup(inviteCode.trim(), nickname.trim());
     if (!result) {
-      setError("Invalid invite code. Check and try again.");
+      setError(t("landing.invalidCode"));
       return;
     }
     router.push("/home");
@@ -42,11 +46,14 @@ export default function LandingPage() {
     <div className="flex-1 flex items-center justify-center p-6">
       <div className="w-full max-w-xs">
         <div className="text-center mb-12">
+          <div className="flex justify-end mb-4">
+            <LocaleToggle />
+          </div>
           <h1 className="text-2xl font-light tracking-wide text-neutral-800">
-            pocketto
+            {t("app.name")}
           </h1>
           <p className="text-neutral-400 mt-1.5 text-xs tracking-wide">
-            trip planner
+            {t("app.tagline")}
           </p>
         </div>
 
@@ -56,13 +63,13 @@ export default function LandingPage() {
               onClick={() => setMode("create")}
               className="w-full py-2.5 px-4 text-[#2d5a3f] rounded-md font-normal border border-[#2d5a3f]/30 hover:bg-[#2d5a3f]/5 text-sm"
             >
-              Create a new group
+              {t("landing.create")}
             </button>
             <button
               onClick={() => setMode("join")}
               className="w-full py-2.5 px-4 text-neutral-500 rounded-md font-normal border border-neutral-200 hover:border-neutral-300 text-sm"
             >
-              Join with invite code
+              {t("landing.join")}
             </button>
           </div>
         )}
@@ -71,7 +78,7 @@ export default function LandingPage() {
           <form onSubmit={handleCreate} className="space-y-4">
             <div>
               <label className="block text-xs text-neutral-400 mb-1.5 tracking-wide">
-                Group name
+                {t("landing.groupName")}
               </label>
               <input
                 type="text"

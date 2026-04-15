@@ -6,6 +6,9 @@ import { useCurrentGroup, useCities, useStore } from "@/lib/use-store";
 import { createCity, clearSession } from "@/lib/store";
 import { CATEGORY_CONFIG } from "@/lib/constants";
 import AddCityModal from "@/components/AddCityModal";
+import LocaleToggle from "@/components/LocaleToggle";
+import { t } from "@/lib/i18n";
+import { useLocale } from "@/lib/use-locale";
 
 export default function HomePage() {
   const router = useRouter();
@@ -14,6 +17,7 @@ export default function HomePage() {
   const store = useStore();
   const [showAddCity, setShowAddCity] = useState(false);
   const [showInvite, setShowInvite] = useState(false);
+  const locale = useLocale();
 
   if (!group || !member) {
     if (typeof window !== "undefined") router.push("/");
@@ -51,15 +55,16 @@ export default function HomePage() {
           <div>
             <h1 className="text-lg font-semibold">{group.name}</h1>
             <p className="text-xs text-neutral-500">
-              Logged in as {member.nickname}
+              { t("home.loggedIn") } {member.nickname}
             </p>
           </div>
           <div className="flex items-center gap-2">
+            <LocaleToggle />
             <button
               onClick={() => setShowInvite(!showInvite)}
               className="text-xs px-3 py-1.5 rounded-md border border-neutral-200 text-neutral-600 hover:bg-neutral-50"
             >
-              Invite code
+              {t("home.inviteCode")}
             </button>
             <button
               onClick={() => {
@@ -68,14 +73,14 @@ export default function HomePage() {
               }}
               className="text-xs px-3 py-1.5 rounded-md text-neutral-500 hover:bg-neutral-50"
             >
-              Leave
+              {t("home.leave")}
             </button>
           </div>
         </div>
         {showInvite && (
           <div className="max-w-4xl mx-auto px-6 pb-4">
             <div className="inline-flex items-center gap-3 bg-[#f2f7f4] rounded-md px-4 py-2.5">
-              <span className="text-xs text-[#1a3628]">Share this code:</span>
+              <span className="text-xs text-[#1a3628]">{ t("home.shareCode") }</span>
               <span className="font-mono text-lg font-semibold tracking-[0.2em] text-[#234a33]">
                 {group.invite_code}
               </span>
@@ -83,7 +88,7 @@ export default function HomePage() {
                 onClick={() => navigator.clipboard.writeText(group.invite_code)}
                 className="text-xs text-[#234a33] hover:text-[#1a3628] underline"
               >
-                Copy
+                {t("home.copy")}
               </button>
             </div>
           </div>
@@ -99,7 +104,7 @@ export default function HomePage() {
             className="w-full text-left mb-8 p-5 rounded-lg border border-[#2d5a3f]/20 bg-[#f2f7f4] hover:border-[#2d5a3f]/30"
           >
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs text-[#2d5a3f]/60 uppercase tracking-wide">Today</span>
+              <span className="text-xs text-[#2d5a3f]/60 uppercase tracking-wide">{t("home.today")}</span>
               <span className="text-xs text-neutral-400">{todayPlan.city.name}</span>
             </div>
             <p className="font-medium text-sm mb-1.5">{todayPlan.plan.label}</p>
@@ -114,26 +119,26 @@ export default function HomePage() {
 
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-sm font-medium text-neutral-500 uppercase tracking-wide">
-            Cities
+            {t("home.cities")}
           </h2>
           <button
             onClick={() => setShowAddCity(true)}
             className="text-sm px-4 py-2 text-[#2d5a3f] border border-[#2d5a3f]/30 rounded-md font-medium hover:bg-[#2d5a3f]/5"
           >
-            + Add city
+            {t("home.addCity")}
           </button>
         </div>
 
         {placeCounts.length === 0 ? (
           <div className="text-center py-20">
             <p className="text-neutral-400 text-sm mb-4">
-              No cities yet. Start planning your trip!
+              {t("home.noCities")}
             </p>
             <button
               onClick={() => setShowAddCity(true)}
               className="text-sm text-[#2d5a3f] hover:text-[#234a33] font-medium"
             >
-              + Add your first city
+              {t("home.addFirst")}
             </button>
           </div>
         ) : (
@@ -162,7 +167,7 @@ export default function HomePage() {
                   </p>
                 )}
                 <p className="text-xs text-neutral-400">
-                  {city.placeCount} {city.placeCount === 1 ? "place" : "places"} saved
+                  {city.placeCount} {city.placeCount === 1 ? t("home.place") : t("home.places")}
                 </p>
               </button>
             ))}
