@@ -8,6 +8,7 @@ import { parseSourceUrl } from "@/lib/url-parser";
 import { CATEGORY_CONFIG, PLATFORM_CONFIG, VIBE_CONFIG } from "@/lib/constants";
 import { Category, RatingVibe } from "@/lib/types";
 import { showToast } from "@/components/Toast";
+import { t } from "@/lib/i18n";
 
 interface ImportItem {
   id: string;
@@ -137,9 +138,9 @@ export default function ImportPage() {
         >
           &larr; {city.name}
         </button>
-        <h1 className="text-lg font-medium">Bulk Import</h1>
+        <h1 className="text-lg font-medium">{ t("import.title") }</h1>
         <p className="text-xs text-neutral-400 mt-0.5">
-          Paste links or text containing URLs
+          {t("import.subtitle")}
         </p>
       </header>
 
@@ -154,7 +155,7 @@ export default function ImportPage() {
           />
           <div className="flex items-center justify-between mt-4">
             <span className="text-xs text-neutral-400">
-              {extractUrls(rawText).length} URLs detected
+              {extractUrls(rawText).length} {t("import.detected")}
             </span>
             <button
               onClick={handleExtract}
@@ -289,7 +290,7 @@ export default function ImportPage() {
                           onChange={(e) => updateItem(item.id, { existingPlaceId: e.target.value || null })}
                           className="w-full text-sm border border-neutral-200 rounded-md px-2.5 py-1.5 focus:outline-none focus:border-[#2d5a3f]/50"
                         >
-                          <option value="">Select a place...</option>
+                          <option value="">{ t("import.selectPlace") }</option>
                           {places.map((p) => (
                             <option key={p.id} value={p.id}>
                               {CATEGORY_CONFIG[p.category]?.emoji} {p.name}

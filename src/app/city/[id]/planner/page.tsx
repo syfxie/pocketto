@@ -28,6 +28,7 @@ import {
 import { CATEGORY_CONFIG } from "@/lib/constants";
 import DayColumn from "@/components/DayColumn";
 import DraggablePlace from "@/components/DraggablePlace";
+import { t } from "@/lib/i18n";
 
 const UNPLANNED_ID = "__unplanned__";
 
@@ -179,7 +180,7 @@ export default function PlannerPage() {
           </div>
           <div className="flex items-center justify-between">
             <h1 className="text-xl font-semibold">
-              Day Planner{" "}
+              {t("planner.title")}{" "}
               <span className="text-neutral-400 font-normal">
                 — {city.name}
               </span>
@@ -188,7 +189,7 @@ export default function PlannerPage() {
               onClick={handleAddDay}
               className="text-sm px-4 py-2 text-[#2d5a3f] border border-[#2d5a3f]/30 rounded-md font-medium hover:bg-[#2d5a3f]/5"
             >
-              + Add day
+              {t("planner.addDay")}
             </button>
           </div>
         </div>
@@ -208,7 +209,7 @@ export default function PlannerPage() {
             <div className="w-72 flex-shrink-0">
               <div className="bg-neutral-50 rounded-lg border border-neutral-200 p-4 h-full">
                 <h3 className="text-sm font-medium text-neutral-500 mb-3">
-                  Unplanned ({unplannedPlaces.length})
+                  {t("planner.unplanned")} ({unplannedPlaces.length})
                 </h3>
                 <div className="space-y-2">
                   {unplannedPlaces.map((place) => (
@@ -221,7 +222,7 @@ export default function PlannerPage() {
                   ))}
                   {unplannedPlaces.length === 0 && (
                     <p className="text-xs text-neutral-400 text-center py-8">
-                      All places assigned!
+                      {t("planner.allAssigned")}
                     </p>
                   )}
                 </div>
@@ -247,14 +248,13 @@ export default function PlannerPage() {
               <div className="flex-1 flex items-center justify-center">
                 <div className="text-center">
                   <p className="text-neutral-400 text-sm mb-4">
-                    No days planned yet. Add a day to start building your
-                    itinerary.
+                    {t("planner.noPlans")}
                   </p>
                   <button
                     onClick={handleAddDay}
                     className="text-sm text-[#2d5a3f] hover:text-[#234a33] font-medium"
                   >
-                    + Add your first day
+                    {t("planner.addFirst")}
                   </button>
                 </div>
               </div>

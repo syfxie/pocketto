@@ -9,6 +9,7 @@ import {
 import { DayPlan, DayPlanStop, Place } from "@/lib/types";
 import { CATEGORY_CONFIG, PRIORITY_CONFIG } from "@/lib/constants";
 import SortableStop from "@/components/SortableStop";
+import { t } from "@/lib/i18n";
 
 interface Props {
   plan: DayPlan;
@@ -110,7 +111,7 @@ export default function DayColumn({
             })}
             {stops.length === 0 && (
               <div className="text-center py-8 text-xs text-neutral-400 border-2 border-dashed border-neutral-200 rounded-md">
-                Drag places here
+                {t("planner.dragHere")}
               </div>
             )}
           </div>
@@ -119,7 +120,7 @@ export default function DayColumn({
         {/* Day footer */}
         <div className="mt-3 pt-3 border-t border-neutral-100 flex justify-between items-center">
           <span className="text-xs text-neutral-400">
-            {stops.length} {stops.length === 1 ? "stop" : "stops"}
+            {stops.length} {stops.length === 1 ? t("planner.stop") : t("planner.stops")}
           </span>
           {confirmDelete ? (
             <div className="flex items-center gap-2">
@@ -141,7 +142,7 @@ export default function DayColumn({
               onClick={() => setConfirmDelete(true)}
               className="text-xs text-neutral-400 hover:text-red-500"
             >
-              Remove day
+              {t("planner.removeDay")}
             </button>
           )}
         </div>
