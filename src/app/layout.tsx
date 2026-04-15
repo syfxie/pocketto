@@ -24,6 +24,10 @@ export const metadata: Metadata = {
     statusBarStyle: "default",
     title: "Pocketto",
   },
+  icons: {
+    icon: "/icon.svg",
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export default function RootLayout({
