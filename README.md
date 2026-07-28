@@ -4,6 +4,8 @@ I'm going to china!!
 
 This is a super minimalist trip planner for my upcoming China trip — an many more trips to come. Collect restaurant and activity recommendations from social media, organize them by city, and build day-by-day itineraries.
 
+<img width="1457" height="789" alt="image" src="https://github.com/user-attachments/assets/8e741d9c-1a43-4603-bdb3-2df0e5bfdf98" />
+
 ## Features
 
 - **Collect recommendations** — Save places from TikTok, RedNote, Instagram, YouTube with auto-detected platform and author
