@@ -1,6 +1,8 @@
 # pocketto
 
-A minimalist trip planner for China. Collect restaurant and activity recommendations from social media, organize them by city, and build day-by-day itineraries.
+I'm going to china!!
+
+This is a super minimalist trip planner for my upcoming China trip — an many more trips to come. Collect restaurant and activity recommendations from social media, organize them by city, and build day-by-day itineraries.
 
 ## Features
 
